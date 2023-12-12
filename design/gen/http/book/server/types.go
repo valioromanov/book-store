@@ -259,12 +259,12 @@ func NewPostBookBookReq(body *PostBookRequestBody) *book.BookReq {
 	return v
 }
 
-// NewPatchBookBookReq builds a book service patchBook endpoint payload.
-func NewPatchBookBookReq(body *PatchBookRequestBody, id int) *book.BookReq {
-	v := &book.BookReq{
+// NewPatchBookBookPathcReq builds a book service patchBook endpoint payload.
+func NewPatchBookBookPathcReq(body *PatchBookRequestBody, id int) *book.BookPathcReq {
+	v := &book.BookPathcReq{
 		ID:          body.ID,
-		Title:       *body.Title,
-		Author:      *body.Author,
+		Title:       body.Title,
+		Author:      body.Author,
 		BookCover:   body.BookCover,
 		PublishedAt: body.PublishedAt,
 	}
@@ -276,18 +276,6 @@ func NewPatchBookBookReq(body *PatchBookRequestBody, id int) *book.BookReq {
 // ValidatePostBookRequestBody runs the validations defined on
 // PostBookRequestBody
 func ValidatePostBookRequestBody(body *PostBookRequestBody) (err error) {
-	if body.Title == nil {
-		err = goa.MergeErrors(err, goa.MissingFieldError("title", "body"))
-	}
-	if body.Author == nil {
-		err = goa.MergeErrors(err, goa.MissingFieldError("author", "body"))
-	}
-	return
-}
-
-// ValidatePatchBookRequestBody runs the validations defined on
-// PatchBookRequestBody
-func ValidatePatchBookRequestBody(body *PatchBookRequestBody) (err error) {
 	if body.Title == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("title", "body"))
 	}

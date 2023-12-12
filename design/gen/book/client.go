@@ -61,7 +61,7 @@ func (c *Client) PostBook(ctx context.Context, p *BookReq) (res *BookResult, err
 //   - "NotFound" (type *goa.ServiceError)
 //   - "BadRequest" (type *goa.ServiceError)
 //   - error: internal error
-func (c *Client) PatchBook(ctx context.Context, p *BookReq) (err error) {
+func (c *Client) PatchBook(ctx context.Context, p *BookPathcReq) (err error) {
 	_, err = c.PatchBookEndpoint(ctx, p)
 	return
 }

@@ -85,14 +85,14 @@ var _ = Service("book", func() {
 	})
 
 	Method("patchBook", func() {
-		Payload(BookReq)
+		Payload(BookPathcReq)
 		Error("NotFound")
 		Error("BadRequest")
 		Result(Empty)
 
 		HTTP(func() {
 			PATCH("/book/{id}")
-			Body(BookReq)
+			Body(BookPathcReq)
 			Response(StatusNoContent)
 			Response("BadRequest", StatusBadRequest)
 			Response("NotFound", StatusNotFound)
@@ -112,6 +112,15 @@ var BookReq = Type("BookReq", func() {
 	Attribute("bookCover", Bytes)
 	Attribute("publishedAt", String)
 	Required("title", "author")
+})
+
+var BookPathcReq = Type("BookPathcReq", func() {
+	Description("A single book response")
+	Attribute("id", Int)
+	Attribute("title", String)
+	Attribute("author", String)
+	Attribute("bookCover", Bytes)
+	Attribute("publishedAt", String)
 })
 
 var Book = ResultType("application/vnd.goa.example.book", "BookResult", func() {

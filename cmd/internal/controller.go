@@ -11,6 +11,7 @@ import (
 type BookRepository interface {
 	FindById(id int) (repository.BookDB, error)
 	InsertBook(repository.BookDB) (int, error)
+	UpdateBook(repository.BookDB) error
 }
 
 type Controller struct {
@@ -72,6 +73,28 @@ func (c *Controller) PostBook(context context.Context, request *book.BookReq) (*
 	return &res, nil
 }
 
-func (c *Controller) PatchBook(context.Context, *book.BookReq) (err error) {
-	return nil
+func (c *Controller) PatchBook(context context.Context, request *book.BookPathcReq) error {
+	fmt.Println("request: ", request)
+	bookDB, err := c.repo.FindById(*request.ID)
+	if err != nil {
+		return book.MakeNotFound(fmt.Errorf("error while fetching book: %w", err))
+	}
+
+	if request.Author != nil {
+		bookDB.Author = *request.Author
+	}
+	if request.Title != nil {
+		bookDB.Title = *request.Title
+	}
+	if len(request.BookCover) > 0 {
+		bookDB.BookCover = request.BookCover
+	}
+	if request.PublishedAt != nil {
+		publishedAt, err := time.Parse("2006-01-02", *request.PublishedAt)
+		if err != nil {
+			return book.MakeBadRequest(fmt.Errorf("wrong time provided"))
+		}
+		bookDB.PublishedAt = publishedAt
+	}
+	return c.repo.UpdateBook(bookDB)
 }

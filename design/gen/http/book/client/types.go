@@ -28,8 +28,8 @@ type PostBookRequestBody struct {
 // HTTP request body.
 type PatchBookRequestBody struct {
 	ID          *int    `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
-	Title       string  `form:"title" json:"title" xml:"title"`
-	Author      string  `form:"author" json:"author" xml:"author"`
+	Title       *string `form:"title,omitempty" json:"title,omitempty" xml:"title,omitempty"`
+	Author      *string `form:"author,omitempty" json:"author,omitempty" xml:"author,omitempty"`
 	BookCover   []byte  `form:"bookCover,omitempty" json:"bookCover,omitempty" xml:"bookCover,omitempty"`
 	PublishedAt *string `form:"publishedAt,omitempty" json:"publishedAt,omitempty" xml:"publishedAt,omitempty"`
 }
@@ -169,7 +169,7 @@ func NewPostBookRequestBody(p *book.BookReq) *PostBookRequestBody {
 
 // NewPatchBookRequestBody builds the HTTP request body from the payload of the
 // "patchBook" endpoint of the "book" service.
-func NewPatchBookRequestBody(p *book.BookReq) *PatchBookRequestBody {
+func NewPatchBookRequestBody(p *book.BookPathcReq) *PatchBookRequestBody {
 	body := &PatchBookRequestBody{
 		ID:          p.ID,
 		Title:       p.Title,

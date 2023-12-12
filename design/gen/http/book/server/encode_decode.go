@@ -190,10 +190,6 @@ func DecodePatchBookRequest(mux goahttp.Muxer, decoder func(*http.Request) goaht
 			}
 			return nil, goa.DecodePayloadError(err.Error())
 		}
-		err = ValidatePatchBookRequestBody(&body)
-		if err != nil {
-			return nil, err
-		}
 
 		var (
 			id int
@@ -211,7 +207,7 @@ func DecodePatchBookRequest(mux goahttp.Muxer, decoder func(*http.Request) goaht
 		if err != nil {
 			return nil, err
 		}
-		payload := NewPatchBookBookReq(&body, id)
+		payload := NewPatchBookBookPathcReq(&body, id)
 
 		return payload, nil
 	}

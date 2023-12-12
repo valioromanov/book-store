@@ -215,9 +215,9 @@ func (c *Client) BuildPatchBookRequest(ctx context.Context, v any) (*http.Reques
 		id int
 	)
 	{
-		p, ok := v.(*book.BookReq)
+		p, ok := v.(*book.BookPathcReq)
 		if !ok {
-			return nil, goahttp.ErrInvalidType("book", "patchBook", "*book.BookReq", v)
+			return nil, goahttp.ErrInvalidType("book", "patchBook", "*book.BookPathcReq", v)
 		}
 		if p.ID != nil {
 			id = *p.ID
@@ -239,9 +239,9 @@ func (c *Client) BuildPatchBookRequest(ctx context.Context, v any) (*http.Reques
 // patchBook server.
 func EncodePatchBookRequest(encoder func(*http.Request) goahttp.Encoder) func(*http.Request, any) error {
 	return func(req *http.Request, v any) error {
-		p, ok := v.(*book.BookReq)
+		p, ok := v.(*book.BookPathcReq)
 		if !ok {
-			return goahttp.ErrInvalidType("book", "patchBook", "*book.BookReq", v)
+			return goahttp.ErrInvalidType("book", "patchBook", "*book.BookPathcReq", v)
 		}
 		body := NewPatchBookRequestBody(p)
 		if err := encoder(req).Encode(&body); err != nil {

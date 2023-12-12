@@ -28,7 +28,7 @@ func UsageCommands() string {
 
 // UsageExamples produces an example of a valid invocation of the CLI tool.
 func UsageExamples() string {
-	return os.Args[0] + ` book get-book --book-id 8525537397822717013` + "\n" +
+	return os.Args[0] + ` book get-book --book-id 2700465139880268394` + "\n" +
 		""
 }
 
@@ -168,7 +168,7 @@ GetBook implements getBook.
     -book-id INT: Book ID
 
 Example:
-    %[1]s book get-book --book-id 8525537397822717013
+    %[1]s book get-book --book-id 2700465139880268394
 `, os.Args[0])
 }
 
@@ -180,11 +180,11 @@ PostBook implements postBook.
 
 Example:
     %[1]s book post-book --body '{
-      "author": "Magni officia voluptatem voluptate.",
-      "bookCover": "VXQgZXQu",
-      "id": 1839345345543455348,
-      "publishedAt": "Modi officia inventore aut fuga.",
-      "title": "Dicta molestiae veniam."
+      "author": "Quidem asperiores.",
+      "bookCover": "QWRpcGlzY2kgcXVvZC4=",
+      "id": 9193006376374536106,
+      "publishedAt": "Sint reprehenderit ex sit accusantium velit qui.",
+      "title": "Itaque placeat labore cum sit illum suscipit."
    }'
 `, os.Args[0])
 }
@@ -198,11 +198,11 @@ PatchBook implements patchBook.
 
 Example:
     %[1]s book patch-book --body '{
-      "author": "Et iusto.",
-      "bookCover": "TmlzaSBjdW0gc2ludC4=",
-      "id": 2697799264669600201,
-      "publishedAt": "Cum odit ab dignissimos id amet.",
-      "title": "Dicta labore."
-   }' --id 5889785589840037587
+      "author": "Ut tenetur ut inventore voluptates.",
+      "bookCover": "RWEgYSBhIHJlY3VzYW5kYWUu",
+      "id": 4007170647046532603,
+      "publishedAt": "Qui similique inventore et dolores quas.",
+      "title": "Perferendis ut rerum."
+   }' --id 1526759246777953065
 `, os.Args[0])
 }
