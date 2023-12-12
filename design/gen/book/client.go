@@ -43,10 +43,9 @@ func (c *Client) GetBook(ctx context.Context, p *GetBookPayload) (res *BookResul
 
 // PostBook calls the "postBook" endpoint of the "book" service.
 // PostBook may return the following errors:
-//   - "NotFound" (type *goa.ServiceError)
 //   - "BadRequest" (type *goa.ServiceError)
 //   - error: internal error
-func (c *Client) PostBook(ctx context.Context, p *BookResult) (res *BookResult, err error) {
+func (c *Client) PostBook(ctx context.Context, p *BookReq) (res *BookResult, err error) {
 	var ires any
 	ires, err = c.PostBookEndpoint(ctx, p)
 	if err != nil {

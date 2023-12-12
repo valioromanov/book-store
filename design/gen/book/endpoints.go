@@ -51,7 +51,7 @@ func NewGetBookEndpoint(s Service) goa.Endpoint {
 // "postBook" of service "book".
 func NewPostBookEndpoint(s Service) goa.Endpoint {
 	return func(ctx context.Context, req any) (any, error) {
-		p := req.(*BookResult)
+		p := req.(*BookReq)
 		res, err := s.PostBook(ctx, p)
 		if err != nil {
 			return nil, err

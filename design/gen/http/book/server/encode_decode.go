@@ -127,7 +127,11 @@ func DecodePostBookRequest(mux goahttp.Muxer, decoder func(*http.Request) goahtt
 			}
 			return nil, goa.DecodePayloadError(err.Error())
 		}
-		payload := NewPostBookBookResult(&body)
+		err = ValidatePostBookRequestBody(&body)
+		if err != nil {
+			return nil, err
+		}
+		payload := NewPostBookBookReq(&body)
 
 		return payload, nil
 	}

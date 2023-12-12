@@ -33,3 +33,13 @@ func (br *BookRepo) FindById(id int) (BookDB, error) {
 
 	return book, nil
 }
+
+func (br *BookRepo) InsertBook(book BookDB) (int, error) {
+	result := br.db.Create(&book)
+
+	if result.Error != nil {
+		return 0, fmt.Errorf("error while inserting book: %w", result.Error)
+	}
+
+	return book.ID, nil
+}

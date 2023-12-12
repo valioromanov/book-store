@@ -137,9 +137,9 @@ func (c *Client) BuildPostBookRequest(ctx context.Context, v any) (*http.Request
 // postBook server.
 func EncodePostBookRequest(encoder func(*http.Request) goahttp.Encoder) func(*http.Request, any) error {
 	return func(req *http.Request, v any) error {
-		p, ok := v.(*book.BookResult)
+		p, ok := v.(*book.BookReq)
 		if !ok {
-			return goahttp.ErrInvalidType("book", "postBook", "*book.BookResult", v)
+			return goahttp.ErrInvalidType("book", "postBook", "*book.BookReq", v)
 		}
 		body := NewPostBookRequestBody(p)
 		if err := encoder(req).Encode(&body); err != nil {

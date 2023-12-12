@@ -28,7 +28,7 @@ func UsageCommands() string {
 
 // UsageExamples produces an example of a valid invocation of the CLI tool.
 func UsageExamples() string {
-	return os.Args[0] + ` book get-book --book-id 206301125538982077` + "\n" +
+	return os.Args[0] + ` book get-book --book-id 8525537397822717013` + "\n" +
 		""
 }
 
@@ -156,7 +156,7 @@ GetBook implements getBook.
     -book-id INT: Book ID
 
 Example:
-    %[1]s book get-book --book-id 206301125538982077
+    %[1]s book get-book --book-id 8525537397822717013
 `, os.Args[0])
 }
 
@@ -168,11 +168,10 @@ PostBook implements postBook.
 
 Example:
     %[1]s book post-book --body '{
-      "author": "Dolorum et repellendus vero id voluptatem.",
-      "bookCover": "UXVpZGVtIGNvbnNlcXVhdHVyIG9jY2FlY2F0aSBleGNlcHR1cmkgZWl1cyBleGVyY2l0YXRpb25lbS4=",
-      "id": 7940037928223836396,
-      "publishedAt": "Quidem cum.",
-      "title": "Ut et quo."
+      "author": "Magni officia voluptatem voluptate.",
+      "bookCover": "VXQgZXQu",
+      "publishedAt": "Modi officia inventore aut fuga.",
+      "title": "Voluptatum dicta molestiae veniam."
    }'
 `, os.Args[0])
 }

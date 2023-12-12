@@ -19,7 +19,7 @@ type Service interface {
 	// GetBook implements getBook.
 	GetBook(context.Context, *GetBookPayload) (res *BookResult, err error)
 	// PostBook implements postBook.
-	PostBook(context.Context, *BookResult) (res *BookResult, err error)
+	PostBook(context.Context, *BookReq) (res *BookResult, err error)
 }
 
 // ServiceName is the name of the service as defined in the design. This is the
@@ -31,6 +31,14 @@ const ServiceName = "book"
 // are the same values that are set in the endpoint request contexts under the
 // MethodKey key.
 var MethodNames = [2]string{"getBook", "postBook"}
+
+// BookReq is the payload type of the book service postBook method.
+type BookReq struct {
+	Title       string
+	Author      string
+	BookCover   []byte
+	PublishedAt *string
+}
 
 // BookResult is the result type of the book service getBook method.
 type BookResult struct {
@@ -69,8 +77,6 @@ func NewBookResult(vres *bookviews.BookResult) *BookResult {
 	switch vres.View {
 	case "default", "":
 		res = newBookResult(vres.Projected)
-	case "inserting":
-		res = newBookResultInserting(vres.Projected)
 	case "resultOperation":
 		res = newBookResultResultOperation(vres.Projected)
 	}
@@ -85,9 +91,6 @@ func NewViewedBookResult(res *BookResult, view string) *bookviews.BookResult {
 	case "default", "":
 		p := newBookResultView(res)
 		vres = &bookviews.BookResult{Projected: p, View: "default"}
-	case "inserting":
-		p := newBookResultViewInserting(res)
-		vres = &bookviews.BookResult{Projected: p, View: "inserting"}
 	case "resultOperation":
 		p := newBookResultViewResultOperation(res)
 		vres = &bookviews.BookResult{Projected: p, View: "resultOperation"}
@@ -99,18 +102,6 @@ func NewViewedBookResult(res *BookResult, view string) *bookviews.BookResult {
 func newBookResult(vres *bookviews.BookResultView) *BookResult {
 	res := &BookResult{
 		ID:          vres.ID,
-		Title:       vres.Title,
-		Author:      vres.Author,
-		BookCover:   vres.BookCover,
-		PublishedAt: vres.PublishedAt,
-	}
-	return res
-}
-
-// newBookResultInserting converts projected type BookResult to service type
-// BookResult.
-func newBookResultInserting(vres *bookviews.BookResultView) *BookResult {
-	res := &BookResult{
 		Title:       vres.Title,
 		Author:      vres.Author,
 		BookCover:   vres.BookCover,
@@ -133,18 +124,6 @@ func newBookResultResultOperation(vres *bookviews.BookResultView) *BookResult {
 func newBookResultView(res *BookResult) *bookviews.BookResultView {
 	vres := &bookviews.BookResultView{
 		ID:          res.ID,
-		Title:       res.Title,
-		Author:      res.Author,
-		BookCover:   res.BookCover,
-		PublishedAt: res.PublishedAt,
-	}
-	return vres
-}
-
-// newBookResultViewInserting projects result type BookResult to projected type
-// BookResultView using the "inserting" view.
-func newBookResultViewInserting(res *BookResult) *bookviews.BookResultView {
-	vres := &bookviews.BookResultView{
 		Title:       res.Title,
 		Author:      res.Author,
 		BookCover:   res.BookCover,

@@ -18,72 +18,18 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/PostBookRequestBody'
+                            $ref: '#/components/schemas/BookReq'
                         example:
-                            author: Dolorum et repellendus vero id voluptatem.
+                            author: Magni officia voluptatem voluptate.
                             bookCover:
-                                - 81
-                                - 117
-                                - 105
-                                - 100
-                                - 101
-                                - 109
-                                - 32
-                                - 99
-                                - 111
-                                - 110
-                                - 115
-                                - 101
-                                - 113
-                                - 117
-                                - 97
+                                - 85
                                 - 116
-                                - 117
-                                - 114
-                                - 32
-                                - 111
-                                - 99
-                                - 99
-                                - 97
-                                - 101
-                                - 99
-                                - 97
-                                - 116
-                                - 105
                                 - 32
                                 - 101
-                                - 120
-                                - 99
-                                - 101
-                                - 112
                                 - 116
-                                - 117
-                                - 114
-                                - 105
-                                - 32
-                                - 101
-                                - 105
-                                - 117
-                                - 115
-                                - 32
-                                - 101
-                                - 120
-                                - 101
-                                - 114
-                                - 99
-                                - 105
-                                - 116
-                                - 97
-                                - 116
-                                - 105
-                                - 111
-                                - 110
-                                - 101
-                                - 109
                                 - 46
-                            id: 7940037928223836396
-                            publishedAt: Quidem cum.
-                            title: Ut et quo.
+                            publishedAt: Modi officia inventore aut fuga.
+                            title: Voluptatum dicta molestiae veniam.
             responses:
                 "200":
                     description: OK response.
@@ -92,7 +38,7 @@ paths:
                             schema:
                                 $ref: '#/components/schemas/PostBookResponseBodyResultOperation'
                             example:
-                                id: 3602719749388078460
+                                id: 6109683414823579693
                 "400":
                     description: 'BadRequest: Bad Request response.'
                     content:
@@ -113,9 +59,9 @@ paths:
                   schema:
                     type: integer
                     description: Book ID
-                    example: 4575182873021229415
+                    example: 5737638578049529029
                     format: int64
-                  example: 5534387086196142826
+                  example: 1508401857608953804
             responses:
                 "200":
                     description: OK response.
@@ -124,39 +70,34 @@ paths:
                             schema:
                                 $ref: '#/components/schemas/GetBookResponseBody'
                             example:
-                                author: Nostrum voluptas illum qui.
+                                author: Est et eligendi eos quo accusantium.
                                 bookCover:
-                                    - 73
-                                    - 108
-                                    - 108
-                                    - 111
-                                    - 32
-                                    - 101
-                                    - 115
-                                    - 116
-                                    - 32
-                                    - 115
-                                    - 101
-                                    - 100
-                                    - 32
-                                    - 114
-                                    - 97
-                                    - 116
-                                    - 105
-                                    - 111
-                                    - 110
-                                    - 101
-                                    - 32
-                                    - 105
-                                    - 116
-                                    - 97
-                                    - 113
+                                    - 67
                                     - 117
+                                    - 112
+                                    - 105
+                                    - 100
+                                    - 105
+                                    - 116
+                                    - 97
+                                    - 116
                                     - 101
+                                    - 32
+                                    - 109
+                                    - 97
+                                    - 103
+                                    - 110
+                                    - 105
+                                    - 32
+                                    - 97
+                                    - 110
+                                    - 105
+                                    - 109
+                                    - 105
                                     - 46
-                                id: 3338801228728578773
-                                publishedAt: Sunt similique molestias ipsum.
-                                title: Laborum magnam sint voluptas qui illo non.
+                                id: 4631102261227338018
+                                publishedAt: Error veniam libero omnis odit.
+                                title: Ipsum quia consequatur veritatis dicta.
                 "400":
                     description: 'BadRequest: Bad Request response.'
                     content:
@@ -180,6 +121,54 @@ paths:
                     description: File downloaded
 components:
     schemas:
+        BookReq:
+            type: object
+            properties:
+                author:
+                    type: string
+                    example: Deleniti est architecto qui aut dolor.
+                bookCover:
+                    type: string
+                    example:
+                        - 69
+                        - 116
+                        - 32
+                        - 100
+                        - 105
+                        - 115
+                        - 116
+                        - 105
+                        - 110
+                        - 99
+                        - 116
+                        - 105
+                        - 111
+                        - 46
+                    format: binary
+                publishedAt:
+                    type: string
+                    example: Magni quam modi.
+                title:
+                    type: string
+                    example: Sed quo omnis est dolores illum occaecati.
+            description: A single book response
+            example:
+                author: Consequuntur molestiae et.
+                bookCover:
+                    - 81
+                    - 117
+                    - 105
+                    - 32
+                    - 115
+                    - 105
+                    - 110
+                    - 116
+                    - 46
+                publishedAt: Est similique nobis odit.
+                title: Beatae placeat.
+            required:
+                - title
+                - author
         Error:
             type: object
             properties:
@@ -202,7 +191,7 @@ components:
                 temporary:
                     type: boolean
                     description: Is the error temporary?
-                    example: true
+                    example: false
                 timeout:
                     type: boolean
                     description: Is the error a timeout?
@@ -227,140 +216,89 @@ components:
                 author:
                     type: string
                     description: author of the book
-                    example: Porro distinctio aliquid provident modi dolor.
-                bookCover:
-                    type: string
-                    description: cover of the book
-                    example:
-                        - 86
-                        - 101
-                        - 110
-                        - 105
-                        - 97
-                        - 109
-                        - 32
-                        - 113
-                        - 117
-                        - 105
-                        - 97
-                        - 32
-                        - 104
-                        - 105
-                        - 99
-                        - 32
-                        - 105
-                        - 100
-                        - 46
-                    format: binary
-                id:
-                    type: integer
-                    description: ID of the book
-                    example: 242785944888730846
-                    format: int64
-                publishedAt:
-                    type: string
-                    description: cover of the book
-                    example: Libero cupiditate voluptatem similique.
-                title:
-                    type: string
-                    description: ' of the book'
-                    example: Sunt assumenda adipisci iste eius.
-            description: GetBookResponseBody result type (default view)
-            example:
-                author: Voluptas earum eaque quo dolorem repellendus.
-                bookCover:
-                    - 65
-                    - 99
-                    - 99
-                    - 117
-                    - 115
-                    - 97
-                    - 110
-                    - 116
-                    - 105
-                    - 117
-                    - 109
-                    - 32
-                    - 115
-                    - 101
-                    - 100
-                    - 46
-                id: 1940675957994074533
-                publishedAt: Consectetur nulla consequatur possimus et ratione.
-                title: Vel hic expedita.
-        PostBookRequestBody:
-            type: object
-            properties:
-                author:
-                    type: string
-                    description: author of the book
-                    example: Quasi enim error quis quia in quasi.
+                    example: Voluptas earum eaque quo dolorem repellendus.
                 bookCover:
                     type: string
                     description: cover of the book
                     example:
                         - 65
-                        - 109
-                        - 101
-                        - 116
-                        - 32
-                        - 100
-                        - 111
-                        - 108
-                        - 111
-                        - 114
-                        - 32
-                        - 97
+                        - 99
+                        - 99
                         - 117
+                        - 115
+                        - 97
+                        - 110
                         - 116
+                        - 105
+                        - 117
+                        - 109
+                        - 32
+                        - 115
+                        - 101
+                        - 100
                         - 46
                     format: binary
                 id:
                     type: integer
                     description: ID of the book
-                    example: 7722079312788365161
+                    example: 1940675957994074533
                     format: int64
                 publishedAt:
                     type: string
                     description: cover of the book
-                    example: Eum sed quo omnis est dolores illum.
+                    example: Consectetur nulla consequatur possimus et ratione.
                 title:
                     type: string
                     description: ' of the book'
-                    example: Suscipit ipsam sequi quia et.
+                    example: Vel hic expedita.
+            description: GetBookResponseBody result type (default view)
             example:
-                author: Et distinctio.
+                author: Corporis nesciunt suscipit.
                 bookCover:
-                    - 77
-                    - 97
-                    - 103
-                    - 110
+                    - 83
+                    - 101
+                    - 113
+                    - 117
                     - 105
                     - 32
                     - 113
                     - 117
+                    - 105
                     - 97
-                    - 109
                     - 32
-                    - 109
+                    - 101
+                    - 116
+                    - 32
+                    - 118
                     - 111
-                    - 100
+                    - 108
+                    - 117
+                    - 112
+                    - 116
+                    - 97
+                    - 116
+                    - 101
+                    - 32
+                    - 113
+                    - 117
+                    - 97
+                    - 115
                     - 105
                     - 46
-                id: 6182332736197887162
-                publishedAt: Beatae placeat.
-                title: Deleniti est architecto qui aut dolor.
+                id: 7922113091093901608
+                publishedAt: Error quis quia in.
+                title: Voluptatem voluptatem et.
         PostBookResponseBodyResultOperation:
             type: object
             properties:
                 id:
                     type: integer
                     description: ID of the book
-                    example: 5830167137320991927
+                    example: 1554665296253675918
                     format: int64
             description: PostBookResponseBody result type (resultOperation view)
             example:
-                id: 3417202608605971474
+                id: 4822901952458110488
 tags:
     - name: book
       description: The book service performs operations for books

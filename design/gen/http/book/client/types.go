@@ -17,15 +17,9 @@ import (
 // PostBookRequestBody is the type of the "book" service "postBook" endpoint
 // HTTP request body.
 type PostBookRequestBody struct {
-	// ID of the book
-	ID *int `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
-	// of the book
-	Title *string `form:"title,omitempty" json:"title,omitempty" xml:"title,omitempty"`
-	// author of the book
-	Author *string `form:"author,omitempty" json:"author,omitempty" xml:"author,omitempty"`
-	// cover of the book
-	BookCover []byte `form:"bookCover,omitempty" json:"bookCover,omitempty" xml:"bookCover,omitempty"`
-	// cover of the book
+	Title       string  `form:"title" json:"title" xml:"title"`
+	Author      string  `form:"author" json:"author" xml:"author"`
+	BookCover   []byte  `form:"bookCover,omitempty" json:"bookCover,omitempty" xml:"bookCover,omitempty"`
 	PublishedAt *string `form:"publishedAt,omitempty" json:"publishedAt,omitempty" xml:"publishedAt,omitempty"`
 }
 
@@ -115,9 +109,8 @@ type PostBookBadRequestResponseBody struct {
 
 // NewPostBookRequestBody builds the HTTP request body from the payload of the
 // "postBook" endpoint of the "book" service.
-func NewPostBookRequestBody(p *book.BookResult) *PostBookRequestBody {
+func NewPostBookRequestBody(p *book.BookReq) *PostBookRequestBody {
 	body := &PostBookRequestBody{
-		ID:          p.ID,
 		Title:       p.Title,
 		Author:      p.Author,
 		BookCover:   p.BookCover,

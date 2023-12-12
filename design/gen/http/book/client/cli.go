@@ -35,17 +35,16 @@ func BuildGetBookPayload(bookGetBookBookID string) (*book.GetBookPayload, error)
 
 // BuildPostBookPayload builds the payload for the book postBook endpoint from
 // CLI flags.
-func BuildPostBookPayload(bookPostBookBody string) (*book.BookResult, error) {
+func BuildPostBookPayload(bookPostBookBody string) (*book.BookReq, error) {
 	var err error
 	var body PostBookRequestBody
 	{
 		err = json.Unmarshal([]byte(bookPostBookBody), &body)
 		if err != nil {
-			return nil, fmt.Errorf("invalid JSON for body, \nerror: %s, \nexample of valid JSON:\n%s", err, "'{\n      \"author\": \"Dolorum et repellendus vero id voluptatem.\",\n      \"bookCover\": \"UXVpZGVtIGNvbnNlcXVhdHVyIG9jY2FlY2F0aSBleGNlcHR1cmkgZWl1cyBleGVyY2l0YXRpb25lbS4=\",\n      \"id\": 7940037928223836396,\n      \"publishedAt\": \"Quidem cum.\",\n      \"title\": \"Ut et quo.\"\n   }'")
+			return nil, fmt.Errorf("invalid JSON for body, \nerror: %s, \nexample of valid JSON:\n%s", err, "'{\n      \"author\": \"Magni officia voluptatem voluptate.\",\n      \"bookCover\": \"VXQgZXQu\",\n      \"publishedAt\": \"Modi officia inventore aut fuga.\",\n      \"title\": \"Voluptatum dicta molestiae veniam.\"\n   }'")
 		}
 	}
-	v := &book.BookResult{
-		ID:          body.ID,
+	v := &book.BookReq{
 		Title:       body.Title,
 		Author:      body.Author,
 		BookCover:   body.BookCover,

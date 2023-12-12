@@ -64,13 +64,7 @@ var _ = Service("book", func() {
 	})
 
 	Method("postBook", func() {
-		// Payload describes the method payload.
-		// Here the payload is an object that consists of two fields.
-		Payload(Book, func() {
-			View("inserting")
-		})
-
-		Error("NotFound")
+		Payload(BookReq)
 		Error("BadRequest")
 
 		// Result describes the method result.
@@ -84,7 +78,7 @@ var _ = Service("book", func() {
 			// Requests to the service consist of HTTP GET requests.
 			// The payload fields are encoded as path parameters.
 			POST("/book")
-
+			Body(BookReq)
 			Response(StatusOK)
 			Response("BadRequest", StatusBadRequest)
 		})
@@ -95,8 +89,18 @@ var _ = Service("book", func() {
 	Files("/swagger.json", "./gen/http/openapi.json")
 })
 
+var BookReq = Type("BookReq", func() {
+	Description("A single book response")
+
+	Attribute("title", String)
+	Attribute("author", String)
+	Attribute("bookCover", Bytes)
+	Attribute("publishedAt", String)
+	Required("title", "author")
+})
+
 var Book = ResultType("application/vnd.goa.example.book", "BookResult", func() {
-	Description("A bottle of wine")
+	Description("A single book response")
 
 	Attributes(func() {
 		Attribute("id", Int, "ID of the book")
@@ -112,14 +116,6 @@ var Book = ResultType("application/vnd.goa.example.book", "BookResult", func() {
 		Attribute("author", String)
 		Attribute("bookCover", Bytes)
 		Attribute("publishedAt", String)
-	})
-
-	View("inserting", func() {
-		Attribute("title", String)
-		Attribute("author", String)
-		Attribute("bookCover", Bytes)
-		Attribute("publishedAt", String)
-		Required("title", "author")
 	})
 
 	View("resultOperation", func() {

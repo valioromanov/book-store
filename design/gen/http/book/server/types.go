@@ -17,15 +17,9 @@ import (
 // PostBookRequestBody is the type of the "book" service "postBook" endpoint
 // HTTP request body.
 type PostBookRequestBody struct {
-	// ID of the book
-	ID *int `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
-	// of the book
-	Title *string `form:"title,omitempty" json:"title,omitempty" xml:"title,omitempty"`
-	// author of the book
-	Author *string `form:"author,omitempty" json:"author,omitempty" xml:"author,omitempty"`
-	// cover of the book
-	BookCover []byte `form:"bookCover,omitempty" json:"bookCover,omitempty" xml:"bookCover,omitempty"`
-	// cover of the book
+	Title       *string `form:"title,omitempty" json:"title,omitempty" xml:"title,omitempty"`
+	Author      *string `form:"author,omitempty" json:"author,omitempty" xml:"author,omitempty"`
+	BookCover   []byte  `form:"bookCover,omitempty" json:"bookCover,omitempty" xml:"bookCover,omitempty"`
 	PublishedAt *string `form:"publishedAt,omitempty" json:"publishedAt,omitempty" xml:"publishedAt,omitempty"`
 }
 
@@ -177,15 +171,26 @@ func NewGetBookPayload(bookID int) *book.GetBookPayload {
 	return v
 }
 
-// NewPostBookBookResult builds a book service postBook endpoint payload.
-func NewPostBookBookResult(body *PostBookRequestBody) *book.BookResult {
-	v := &book.BookResult{
-		ID:          body.ID,
-		Title:       body.Title,
-		Author:      body.Author,
+// NewPostBookBookReq builds a book service postBook endpoint payload.
+func NewPostBookBookReq(body *PostBookRequestBody) *book.BookReq {
+	v := &book.BookReq{
+		Title:       *body.Title,
+		Author:      *body.Author,
 		BookCover:   body.BookCover,
 		PublishedAt: body.PublishedAt,
 	}
 
 	return v
+}
+
+// ValidatePostBookRequestBody runs the validations defined on
+// PostBookRequestBody
+func ValidatePostBookRequestBody(body *PostBookRequestBody) (err error) {
+	if body.Title == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("title", "body"))
+	}
+	if body.Author == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("author", "body"))
+	}
+	return
 }
