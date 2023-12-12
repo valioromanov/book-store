@@ -15,19 +15,22 @@ import (
 
 // Endpoints wraps the "book" service endpoints.
 type Endpoints struct {
-	GetBook goa.Endpoint
+	GetBook  goa.Endpoint
+	PostBook goa.Endpoint
 }
 
 // NewEndpoints wraps the methods of the "book" service with endpoints.
 func NewEndpoints(s Service) *Endpoints {
 	return &Endpoints{
-		GetBook: NewGetBookEndpoint(s),
+		GetBook:  NewGetBookEndpoint(s),
+		PostBook: NewPostBookEndpoint(s),
 	}
 }
 
 // Use applies the given middleware to all the "book" service endpoints.
 func (e *Endpoints) Use(m func(goa.Endpoint) goa.Endpoint) {
 	e.GetBook = m(e.GetBook)
+	e.PostBook = m(e.PostBook)
 }
 
 // NewGetBookEndpoint returns an endpoint function that calls the method
@@ -40,6 +43,20 @@ func NewGetBookEndpoint(s Service) goa.Endpoint {
 			return nil, err
 		}
 		vres := NewViewedBookResult(res, "default")
+		return vres, nil
+	}
+}
+
+// NewPostBookEndpoint returns an endpoint function that calls the method
+// "postBook" of service "book".
+func NewPostBookEndpoint(s Service) goa.Endpoint {
+	return func(ctx context.Context, req any) (any, error) {
+		p := req.(*BookResult)
+		res, err := s.PostBook(ctx, p)
+		if err != nil {
+			return nil, err
+		}
+		vres := NewViewedBookResult(res, "resultOperation")
 		return vres, nil
 	}
 }

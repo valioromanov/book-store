@@ -28,7 +28,7 @@ type BookResultView struct {
 	// author of the book
 	Author *string
 	// cover of the book
-	BookCover [][]byte
+	BookCover []byte
 	// cover of the book
 	PublishedAt *string
 }
@@ -44,6 +44,15 @@ var (
 			"bookCover",
 			"publishedAt",
 		},
+		"inserting": {
+			"title",
+			"author",
+			"bookCover",
+			"publishedAt",
+		},
+		"resultOperation": {
+			"id",
+		},
 	}
 )
 
@@ -53,8 +62,12 @@ func ValidateBookResult(result *BookResult) (err error) {
 	switch result.View {
 	case "default", "":
 		err = ValidateBookResultView(result.Projected)
+	case "inserting":
+		err = ValidateBookResultViewInserting(result.Projected)
+	case "resultOperation":
+		err = ValidateBookResultViewResultOperation(result.Projected)
 	default:
-		err = goa.InvalidEnumValueError("view", result.View, []any{"default"})
+		err = goa.InvalidEnumValueError("view", result.View, []any{"default", "inserting", "resultOperation"})
 	}
 	return
 }
@@ -62,6 +75,20 @@ func ValidateBookResult(result *BookResult) (err error) {
 // ValidateBookResultView runs the validations defined on BookResultView using
 // the "default" view.
 func ValidateBookResultView(result *BookResultView) (err error) {
+
+	return
+}
+
+// ValidateBookResultViewInserting runs the validations defined on
+// BookResultView using the "inserting" view.
+func ValidateBookResultViewInserting(result *BookResultView) (err error) {
+
+	return
+}
+
+// ValidateBookResultViewResultOperation runs the validations defined on
+// BookResultView using the "resultOperation" view.
+func ValidateBookResultViewResultOperation(result *BookResultView) (err error) {
 
 	return
 }

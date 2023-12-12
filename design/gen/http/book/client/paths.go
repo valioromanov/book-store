@@ -15,3 +15,8 @@ import (
 func GetBookBookPath(bookID int) string {
 	return fmt.Sprintf("/book/%v", bookID)
 }
+
+// PostBookBookPath returns the URL path to the book service postBook HTTP endpoint.
+func PostBookBookPath() string {
+	return "/book"
+}

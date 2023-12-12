@@ -47,6 +47,10 @@ func (c *Client) BuildGetBookRequest(ctx context.Context, v any) (*http.Request,
 // DecodeGetBookResponse returns a decoder for responses returned by the book
 // getBook endpoint. restoreBody controls whether the response body should be
 // restored after having been read.
+// DecodeGetBookResponse may return the following errors:
+//   - "NotFound" (type *goa.ServiceError): http.StatusNotFound
+//   - "BadRequest" (type *goa.ServiceError): http.StatusBadRequest
+//   - error: internal error
 func DecodeGetBookResponse(decoder func(*http.Response) goahttp.Decoder, restoreBody bool) func(*http.Response) (any, error) {
 	return func(resp *http.Response) (any, error) {
 		if restoreBody {
@@ -79,9 +83,127 @@ func DecodeGetBookResponse(decoder func(*http.Response) goahttp.Decoder, restore
 			}
 			res := book.NewBookResult(vres)
 			return res, nil
+		case http.StatusNotFound:
+			var (
+				body GetBookNotFoundResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("book", "getBook", err)
+			}
+			err = ValidateGetBookNotFoundResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("book", "getBook", err)
+			}
+			return nil, NewGetBookNotFound(&body)
+		case http.StatusBadRequest:
+			var (
+				body GetBookBadRequestResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("book", "getBook", err)
+			}
+			err = ValidateGetBookBadRequestResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("book", "getBook", err)
+			}
+			return nil, NewGetBookBadRequest(&body)
 		default:
 			body, _ := io.ReadAll(resp.Body)
 			return nil, goahttp.ErrInvalidResponse("book", "getBook", resp.StatusCode, string(body))
+		}
+	}
+}
+
+// BuildPostBookRequest instantiates a HTTP request object with method and path
+// set to call the "book" service "postBook" endpoint
+func (c *Client) BuildPostBookRequest(ctx context.Context, v any) (*http.Request, error) {
+	u := &url.URL{Scheme: c.scheme, Host: c.host, Path: PostBookBookPath()}
+	req, err := http.NewRequest("POST", u.String(), nil)
+	if err != nil {
+		return nil, goahttp.ErrInvalidURL("book", "postBook", u.String(), err)
+	}
+	if ctx != nil {
+		req = req.WithContext(ctx)
+	}
+
+	return req, nil
+}
+
+// EncodePostBookRequest returns an encoder for requests sent to the book
+// postBook server.
+func EncodePostBookRequest(encoder func(*http.Request) goahttp.Encoder) func(*http.Request, any) error {
+	return func(req *http.Request, v any) error {
+		p, ok := v.(*book.BookResult)
+		if !ok {
+			return goahttp.ErrInvalidType("book", "postBook", "*book.BookResult", v)
+		}
+		body := NewPostBookRequestBody(p)
+		if err := encoder(req).Encode(&body); err != nil {
+			return goahttp.ErrEncodingError("book", "postBook", err)
+		}
+		return nil
+	}
+}
+
+// DecodePostBookResponse returns a decoder for responses returned by the book
+// postBook endpoint. restoreBody controls whether the response body should be
+// restored after having been read.
+// DecodePostBookResponse may return the following errors:
+//   - "BadRequest" (type *goa.ServiceError): http.StatusBadRequest
+//   - error: internal error
+func DecodePostBookResponse(decoder func(*http.Response) goahttp.Decoder, restoreBody bool) func(*http.Response) (any, error) {
+	return func(resp *http.Response) (any, error) {
+		if restoreBody {
+			b, err := io.ReadAll(resp.Body)
+			if err != nil {
+				return nil, err
+			}
+			resp.Body = io.NopCloser(bytes.NewBuffer(b))
+			defer func() {
+				resp.Body = io.NopCloser(bytes.NewBuffer(b))
+			}()
+		} else {
+			defer resp.Body.Close()
+		}
+		switch resp.StatusCode {
+		case http.StatusOK:
+			var (
+				body PostBookResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("book", "postBook", err)
+			}
+			p := NewPostBookBookResultOK(&body)
+			view := "resultOperation"
+			vres := &bookviews.BookResult{Projected: p, View: view}
+			if err = bookviews.ValidateBookResult(vres); err != nil {
+				return nil, goahttp.ErrValidationError("book", "postBook", err)
+			}
+			res := book.NewBookResult(vres)
+			return res, nil
+		case http.StatusBadRequest:
+			var (
+				body PostBookBadRequestResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("book", "postBook", err)
+			}
+			err = ValidatePostBookBadRequestResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("book", "postBook", err)
+			}
+			return nil, NewPostBookBadRequest(&body)
+		default:
+			body, _ := io.ReadAll(resp.Body)
+			return nil, goahttp.ErrInvalidResponse("book", "postBook", resp.StatusCode, string(body))
 		}
 	}
 }

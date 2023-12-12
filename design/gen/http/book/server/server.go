@@ -20,6 +20,7 @@ import (
 type Server struct {
 	Mounts             []*MountPoint
 	GetBook            http.Handler
+	PostBook           http.Handler
 	GenHTTPOpenapiJSON http.Handler
 }
 
@@ -55,9 +56,11 @@ func New(
 	return &Server{
 		Mounts: []*MountPoint{
 			{"GetBook", "GET", "/book/{bookID}"},
+			{"PostBook", "POST", "/book"},
 			{"./gen/http/openapi.json", "GET", "/swagger.json"},
 		},
 		GetBook:            NewGetBookHandler(e.GetBook, mux, decoder, encoder, errhandler, formatter),
+		PostBook:           NewPostBookHandler(e.PostBook, mux, decoder, encoder, errhandler, formatter),
 		GenHTTPOpenapiJSON: http.FileServer(fileSystemGenHTTPOpenapiJSON),
 	}
 }
@@ -68,6 +71,7 @@ func (s *Server) Service() string { return "book" }
 // Use wraps the server handlers with the given middleware.
 func (s *Server) Use(m func(http.Handler) http.Handler) {
 	s.GetBook = m(s.GetBook)
+	s.PostBook = m(s.PostBook)
 }
 
 // MethodNames returns the methods served.
@@ -76,6 +80,7 @@ func (s *Server) MethodNames() []string { return book.MethodNames[:] }
 // Mount configures the mux to serve the book endpoints.
 func Mount(mux goahttp.Muxer, h *Server) {
 	MountGetBookHandler(mux, h.GetBook)
+	MountPostBookHandler(mux, h.PostBook)
 	MountGenHTTPOpenapiJSON(mux, goahttp.Replace("", "/./gen/http/openapi.json", h.GenHTTPOpenapiJSON))
 }
 
@@ -109,11 +114,62 @@ func NewGetBookHandler(
 	var (
 		decodeRequest  = DecodeGetBookRequest(mux, decoder)
 		encodeResponse = EncodeGetBookResponse(encoder)
-		encodeError    = goahttp.ErrorEncoder(encoder, formatter)
+		encodeError    = EncodeGetBookError(encoder, formatter)
 	)
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		ctx := context.WithValue(r.Context(), goahttp.AcceptTypeKey, r.Header.Get("Accept"))
 		ctx = context.WithValue(ctx, goa.MethodKey, "getBook")
+		ctx = context.WithValue(ctx, goa.ServiceKey, "book")
+		payload, err := decodeRequest(r)
+		if err != nil {
+			if err := encodeError(ctx, w, err); err != nil {
+				errhandler(ctx, w, err)
+			}
+			return
+		}
+		res, err := endpoint(ctx, payload)
+		if err != nil {
+			if err := encodeError(ctx, w, err); err != nil {
+				errhandler(ctx, w, err)
+			}
+			return
+		}
+		if err := encodeResponse(ctx, w, res); err != nil {
+			errhandler(ctx, w, err)
+		}
+	})
+}
+
+// MountPostBookHandler configures the mux to serve the "book" service
+// "postBook" endpoint.
+func MountPostBookHandler(mux goahttp.Muxer, h http.Handler) {
+	f, ok := h.(http.HandlerFunc)
+	if !ok {
+		f = func(w http.ResponseWriter, r *http.Request) {
+			h.ServeHTTP(w, r)
+		}
+	}
+	mux.Handle("POST", "/book", f)
+}
+
+// NewPostBookHandler creates a HTTP handler which loads the HTTP request and
+// calls the "book" service "postBook" endpoint.
+func NewPostBookHandler(
+	endpoint goa.Endpoint,
+	mux goahttp.Muxer,
+	decoder func(*http.Request) goahttp.Decoder,
+	encoder func(context.Context, http.ResponseWriter) goahttp.Encoder,
+	errhandler func(context.Context, http.ResponseWriter, error),
+	formatter func(ctx context.Context, err error) goahttp.Statuser,
+) http.Handler {
+	var (
+		decodeRequest  = DecodePostBookRequest(mux, decoder)
+		encodeResponse = EncodePostBookResponse(encoder)
+		encodeError    = EncodePostBookError(encoder, formatter)
+	)
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		ctx := context.WithValue(r.Context(), goahttp.AcceptTypeKey, r.Header.Get("Accept"))
+		ctx = context.WithValue(ctx, goa.MethodKey, "postBook")
 		ctx = context.WithValue(ctx, goa.ServiceKey, "book")
 		payload, err := decodeRequest(r)
 		if err != nil {

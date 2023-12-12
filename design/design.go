@@ -42,6 +42,9 @@ var _ = Service("book", func() {
 			Required("bookID")
 		})
 
+		Error("NotFound")
+		Error("BadRequest")
+
 		// Result describes the method result.
 		// Here the result is a simple integer value.
 		Result(Book, func() {
@@ -53,12 +56,37 @@ var _ = Service("book", func() {
 			// Requests to the service consist of HTTP GET requests.
 			// The payload fields are encoded as path parameters.
 			GET("/book/{bookID}")
-			// Responses use a "200 OK" HTTP status.
-			// The result is encoded in the response body (default).
+
 			Response(StatusOK)
-			Error("No book found", func() {
-				Description("No book found with this id")
-			})
+			Response("NotFound", StatusNotFound)
+			Response("BadRequest", StatusBadRequest)
+		})
+	})
+
+	Method("postBook", func() {
+		// Payload describes the method payload.
+		// Here the payload is an object that consists of two fields.
+		Payload(Book, func() {
+			View("inserting")
+		})
+
+		Error("NotFound")
+		Error("BadRequest")
+
+		// Result describes the method result.
+		// Here the result is a simple integer value.
+		Result(Book, func() {
+			View("resultOperation")
+		})
+
+		// HTTP describes the HTTP transport mapping.
+		HTTP(func() {
+			// Requests to the service consist of HTTP GET requests.
+			// The payload fields are encoded as path parameters.
+			POST("/book")
+
+			Response(StatusOK)
+			Response("BadRequest", StatusBadRequest)
 		})
 	})
 
@@ -82,7 +110,21 @@ var Book = ResultType("application/vnd.goa.example.book", "BookResult", func() {
 		Attribute("id", Int)
 		Attribute("title", String)
 		Attribute("author", String)
-		Attribute("bookCover", ArrayOf(Bytes))
+		Attribute("bookCover", Bytes)
 		Attribute("publishedAt", String)
 	})
+
+	View("inserting", func() {
+		Attribute("title", String)
+		Attribute("author", String)
+		Attribute("bookCover", Bytes)
+		Attribute("publishedAt", String)
+		Required("title", "author")
+	})
+
+	View("resultOperation", func() {
+		Attribute("id", Int)
+		Required("id")
+	})
+
 })

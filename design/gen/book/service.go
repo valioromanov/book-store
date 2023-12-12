@@ -10,12 +10,16 @@ package book
 import (
 	bookviews "book-store/design/gen/book/views"
 	"context"
+
+	goa "goa.design/goa/v3/pkg"
 )
 
 // The book service performs operations for books
 type Service interface {
 	// GetBook implements getBook.
 	GetBook(context.Context, *GetBookPayload) (res *BookResult, err error)
+	// PostBook implements postBook.
+	PostBook(context.Context, *BookResult) (res *BookResult, err error)
 }
 
 // ServiceName is the name of the service as defined in the design. This is the
@@ -26,7 +30,7 @@ const ServiceName = "book"
 // MethodNames lists the service method names as defined in the design. These
 // are the same values that are set in the endpoint request contexts under the
 // MethodKey key.
-var MethodNames = [1]string{"getBook"}
+var MethodNames = [2]string{"getBook", "postBook"}
 
 // BookResult is the result type of the book service getBook method.
 type BookResult struct {
@@ -37,7 +41,7 @@ type BookResult struct {
 	// author of the book
 	Author *string
 	// cover of the book
-	BookCover [][]byte
+	BookCover []byte
 	// cover of the book
 	PublishedAt *string
 }
@@ -48,17 +52,47 @@ type GetBookPayload struct {
 	BookID int
 }
 
+// MakeNotFound builds a goa.ServiceError from an error.
+func MakeNotFound(err error) *goa.ServiceError {
+	return goa.NewServiceError(err, "NotFound", false, false, false)
+}
+
+// MakeBadRequest builds a goa.ServiceError from an error.
+func MakeBadRequest(err error) *goa.ServiceError {
+	return goa.NewServiceError(err, "BadRequest", false, false, false)
+}
+
 // NewBookResult initializes result type BookResult from viewed result type
 // BookResult.
 func NewBookResult(vres *bookviews.BookResult) *BookResult {
-	return newBookResult(vres.Projected)
+	var res *BookResult
+	switch vres.View {
+	case "default", "":
+		res = newBookResult(vres.Projected)
+	case "inserting":
+		res = newBookResultInserting(vres.Projected)
+	case "resultOperation":
+		res = newBookResultResultOperation(vres.Projected)
+	}
+	return res
 }
 
 // NewViewedBookResult initializes viewed result type BookResult from result
 // type BookResult using the given view.
 func NewViewedBookResult(res *BookResult, view string) *bookviews.BookResult {
-	p := newBookResultView(res)
-	return &bookviews.BookResult{Projected: p, View: "default"}
+	var vres *bookviews.BookResult
+	switch view {
+	case "default", "":
+		p := newBookResultView(res)
+		vres = &bookviews.BookResult{Projected: p, View: "default"}
+	case "inserting":
+		p := newBookResultViewInserting(res)
+		vres = &bookviews.BookResult{Projected: p, View: "inserting"}
+	case "resultOperation":
+		p := newBookResultViewResultOperation(res)
+		vres = &bookviews.BookResult{Projected: p, View: "resultOperation"}
+	}
+	return vres
 }
 
 // newBookResult converts projected type BookResult to service type BookResult.
@@ -67,13 +101,29 @@ func newBookResult(vres *bookviews.BookResultView) *BookResult {
 		ID:          vres.ID,
 		Title:       vres.Title,
 		Author:      vres.Author,
+		BookCover:   vres.BookCover,
 		PublishedAt: vres.PublishedAt,
 	}
-	if vres.BookCover != nil {
-		res.BookCover = make([][]byte, len(vres.BookCover))
-		for i, val := range vres.BookCover {
-			res.BookCover[i] = val
-		}
+	return res
+}
+
+// newBookResultInserting converts projected type BookResult to service type
+// BookResult.
+func newBookResultInserting(vres *bookviews.BookResultView) *BookResult {
+	res := &BookResult{
+		Title:       vres.Title,
+		Author:      vres.Author,
+		BookCover:   vres.BookCover,
+		PublishedAt: vres.PublishedAt,
+	}
+	return res
+}
+
+// newBookResultResultOperation converts projected type BookResult to service
+// type BookResult.
+func newBookResultResultOperation(vres *bookviews.BookResultView) *BookResult {
+	res := &BookResult{
+		ID: vres.ID,
 	}
 	return res
 }
@@ -85,13 +135,29 @@ func newBookResultView(res *BookResult) *bookviews.BookResultView {
 		ID:          res.ID,
 		Title:       res.Title,
 		Author:      res.Author,
+		BookCover:   res.BookCover,
 		PublishedAt: res.PublishedAt,
 	}
-	if res.BookCover != nil {
-		vres.BookCover = make([][]byte, len(res.BookCover))
-		for i, val := range res.BookCover {
-			vres.BookCover[i] = val
-		}
+	return vres
+}
+
+// newBookResultViewInserting projects result type BookResult to projected type
+// BookResultView using the "inserting" view.
+func newBookResultViewInserting(res *BookResult) *bookviews.BookResultView {
+	vres := &bookviews.BookResultView{
+		Title:       res.Title,
+		Author:      res.Author,
+		BookCover:   res.BookCover,
+		PublishedAt: res.PublishedAt,
+	}
+	return vres
+}
+
+// newBookResultViewResultOperation projects result type BookResult to
+// projected type BookResultView using the "resultOperation" view.
+func newBookResultViewResultOperation(res *BookResult) *bookviews.BookResultView {
+	vres := &bookviews.BookResultView{
+		ID: res.ID,
 	}
 	return vres
 }

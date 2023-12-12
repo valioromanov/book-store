@@ -22,13 +22,13 @@ import (
 //
 //	command (subcommand1|subcommand2|...)
 func UsageCommands() string {
-	return `book get-book
+	return `book (get-book|post-book)
 `
 }
 
 // UsageExamples produces an example of a valid invocation of the CLI tool.
 func UsageExamples() string {
-	return os.Args[0] + ` book get-book --book-id 8817236472877983251` + "\n" +
+	return os.Args[0] + ` book get-book --book-id 206301125538982077` + "\n" +
 		""
 }
 
@@ -46,9 +46,13 @@ func ParseEndpoint(
 
 		bookGetBookFlags      = flag.NewFlagSet("get-book", flag.ExitOnError)
 		bookGetBookBookIDFlag = bookGetBookFlags.String("book-id", "REQUIRED", "Book ID")
+
+		bookPostBookFlags    = flag.NewFlagSet("post-book", flag.ExitOnError)
+		bookPostBookBodyFlag = bookPostBookFlags.String("body", "REQUIRED", "")
 	)
 	bookFlags.Usage = bookUsage
 	bookGetBookFlags.Usage = bookGetBookUsage
+	bookPostBookFlags.Usage = bookPostBookUsage
 
 	if err := flag.CommandLine.Parse(os.Args[1:]); err != nil {
 		return nil, nil, err
@@ -87,6 +91,9 @@ func ParseEndpoint(
 			case "get-book":
 				epf = bookGetBookFlags
 
+			case "post-book":
+				epf = bookPostBookFlags
+
 			}
 
 		}
@@ -115,6 +122,9 @@ func ParseEndpoint(
 			case "get-book":
 				endpoint = c.GetBook()
 				data, err = bookc.BuildGetBookPayload(*bookGetBookBookIDFlag)
+			case "post-book":
+				endpoint = c.PostBook()
+				data, err = bookc.BuildPostBookPayload(*bookPostBookBodyFlag)
 			}
 		}
 	}
@@ -133,6 +143,7 @@ Usage:
 
 COMMAND:
     get-book: GetBook implements getBook.
+    post-book: PostBook implements postBook.
 
 Additional help:
     %[1]s book COMMAND --help
@@ -145,6 +156,23 @@ GetBook implements getBook.
     -book-id INT: Book ID
 
 Example:
-    %[1]s book get-book --book-id 8817236472877983251
+    %[1]s book get-book --book-id 206301125538982077
+`, os.Args[0])
+}
+
+func bookPostBookUsage() {
+	fmt.Fprintf(os.Stderr, `%[1]s [flags] book post-book -body JSON
+
+PostBook implements postBook.
+    -body JSON: 
+
+Example:
+    %[1]s book post-book --body '{
+      "author": "Dolorum et repellendus vero id voluptatem.",
+      "bookCover": "UXVpZGVtIGNvbnNlcXVhdHVyIG9jY2FlY2F0aSBleGNlcHR1cmkgZWl1cyBleGVyY2l0YXRpb25lbS4=",
+      "id": 7940037928223836396,
+      "publishedAt": "Quidem cum.",
+      "title": "Ut et quo."
+   }'
 `, os.Args[0])
 }

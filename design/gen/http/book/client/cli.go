@@ -9,6 +9,7 @@ package client
 
 import (
 	book "book-store/design/gen/book"
+	"encoding/json"
 	"fmt"
 	"strconv"
 )
@@ -28,6 +29,28 @@ func BuildGetBookPayload(bookGetBookBookID string) (*book.GetBookPayload, error)
 	}
 	v := &book.GetBookPayload{}
 	v.BookID = bookID
+
+	return v, nil
+}
+
+// BuildPostBookPayload builds the payload for the book postBook endpoint from
+// CLI flags.
+func BuildPostBookPayload(bookPostBookBody string) (*book.BookResult, error) {
+	var err error
+	var body PostBookRequestBody
+	{
+		err = json.Unmarshal([]byte(bookPostBookBody), &body)
+		if err != nil {
+			return nil, fmt.Errorf("invalid JSON for body, \nerror: %s, \nexample of valid JSON:\n%s", err, "'{\n      \"author\": \"Dolorum et repellendus vero id voluptatem.\",\n      \"bookCover\": \"UXVpZGVtIGNvbnNlcXVhdHVyIG9jY2FlY2F0aSBleGNlcHR1cmkgZWl1cyBleGVyY2l0YXRpb25lbS4=\",\n      \"id\": 7940037928223836396,\n      \"publishedAt\": \"Quidem cum.\",\n      \"title\": \"Ut et quo.\"\n   }'")
+		}
+	}
+	v := &book.BookResult{
+		ID:          body.ID,
+		Title:       body.Title,
+		Author:      body.Author,
+		BookCover:   body.BookCover,
+		PublishedAt: body.PublishedAt,
+	}
 
 	return v, nil
 }

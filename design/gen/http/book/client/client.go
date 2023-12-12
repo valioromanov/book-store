@@ -21,6 +21,10 @@ type Client struct {
 	// endpoint.
 	GetBookDoer goahttp.Doer
 
+	// PostBook Doer is the HTTP client used to make requests to the postBook
+	// endpoint.
+	PostBookDoer goahttp.Doer
+
 	// RestoreResponseBody controls whether the response bodies are reset after
 	// decoding so they can be read again.
 	RestoreResponseBody bool
@@ -42,6 +46,7 @@ func NewClient(
 ) *Client {
 	return &Client{
 		GetBookDoer:         doer,
+		PostBookDoer:        doer,
 		RestoreResponseBody: restoreBody,
 		scheme:              scheme,
 		host:                host,
@@ -64,6 +69,30 @@ func (c *Client) GetBook() goa.Endpoint {
 		resp, err := c.GetBookDoer.Do(req)
 		if err != nil {
 			return nil, goahttp.ErrRequestError("book", "getBook", err)
+		}
+		return decodeResponse(resp)
+	}
+}
+
+// PostBook returns an endpoint that makes HTTP requests to the book service
+// postBook server.
+func (c *Client) PostBook() goa.Endpoint {
+	var (
+		encodeRequest  = EncodePostBookRequest(c.encoder)
+		decodeResponse = DecodePostBookResponse(c.decoder, c.RestoreResponseBody)
+	)
+	return func(ctx context.Context, v any) (any, error) {
+		req, err := c.BuildPostBookRequest(ctx, v)
+		if err != nil {
+			return nil, err
+		}
+		err = encodeRequest(req, v)
+		if err != nil {
+			return nil, err
+		}
+		resp, err := c.PostBookDoer.Do(req)
+		if err != nil {
+			return nil, goahttp.ErrRequestError("book", "postBook", err)
 		}
 		return decodeResponse(resp)
 	}

@@ -10,7 +10,24 @@ package server
 import (
 	book "book-store/design/gen/book"
 	bookviews "book-store/design/gen/book/views"
+
+	goa "goa.design/goa/v3/pkg"
 )
+
+// PostBookRequestBody is the type of the "book" service "postBook" endpoint
+// HTTP request body.
+type PostBookRequestBody struct {
+	// ID of the book
+	ID *int `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// of the book
+	Title *string `form:"title,omitempty" json:"title,omitempty" xml:"title,omitempty"`
+	// author of the book
+	Author *string `form:"author,omitempty" json:"author,omitempty" xml:"author,omitempty"`
+	// cover of the book
+	BookCover []byte `form:"bookCover,omitempty" json:"bookCover,omitempty" xml:"bookCover,omitempty"`
+	// cover of the book
+	PublishedAt *string `form:"publishedAt,omitempty" json:"publishedAt,omitempty" xml:"publishedAt,omitempty"`
+}
 
 // GetBookResponseBody is the type of the "book" service "getBook" endpoint
 // HTTP response body.
@@ -22,9 +39,70 @@ type GetBookResponseBody struct {
 	// author of the book
 	Author *string `form:"author,omitempty" json:"author,omitempty" xml:"author,omitempty"`
 	// cover of the book
-	BookCover [][]byte `form:"bookCover,omitempty" json:"bookCover,omitempty" xml:"bookCover,omitempty"`
+	BookCover []byte `form:"bookCover,omitempty" json:"bookCover,omitempty" xml:"bookCover,omitempty"`
 	// cover of the book
 	PublishedAt *string `form:"publishedAt,omitempty" json:"publishedAt,omitempty" xml:"publishedAt,omitempty"`
+}
+
+// PostBookResponseBodyResultOperation is the type of the "book" service
+// "postBook" endpoint HTTP response body.
+type PostBookResponseBodyResultOperation struct {
+	// ID of the book
+	ID *int `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+}
+
+// GetBookNotFoundResponseBody is the type of the "book" service "getBook"
+// endpoint HTTP response body for the "NotFound" error.
+type GetBookNotFoundResponseBody struct {
+	// Name is the name of this class of errors.
+	Name string `form:"name" json:"name" xml:"name"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID string `form:"id" json:"id" xml:"id"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message string `form:"message" json:"message" xml:"message"`
+	// Is the error temporary?
+	Temporary bool `form:"temporary" json:"temporary" xml:"temporary"`
+	// Is the error a timeout?
+	Timeout bool `form:"timeout" json:"timeout" xml:"timeout"`
+	// Is the error a server-side fault?
+	Fault bool `form:"fault" json:"fault" xml:"fault"`
+}
+
+// GetBookBadRequestResponseBody is the type of the "book" service "getBook"
+// endpoint HTTP response body for the "BadRequest" error.
+type GetBookBadRequestResponseBody struct {
+	// Name is the name of this class of errors.
+	Name string `form:"name" json:"name" xml:"name"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID string `form:"id" json:"id" xml:"id"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message string `form:"message" json:"message" xml:"message"`
+	// Is the error temporary?
+	Temporary bool `form:"temporary" json:"temporary" xml:"temporary"`
+	// Is the error a timeout?
+	Timeout bool `form:"timeout" json:"timeout" xml:"timeout"`
+	// Is the error a server-side fault?
+	Fault bool `form:"fault" json:"fault" xml:"fault"`
+}
+
+// PostBookBadRequestResponseBody is the type of the "book" service "postBook"
+// endpoint HTTP response body for the "BadRequest" error.
+type PostBookBadRequestResponseBody struct {
+	// Name is the name of this class of errors.
+	Name string `form:"name" json:"name" xml:"name"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID string `form:"id" json:"id" xml:"id"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message string `form:"message" json:"message" xml:"message"`
+	// Is the error temporary?
+	Temporary bool `form:"temporary" json:"temporary" xml:"temporary"`
+	// Is the error a timeout?
+	Timeout bool `form:"timeout" json:"timeout" xml:"timeout"`
+	// Is the error a server-side fault?
+	Fault bool `form:"fault" json:"fault" xml:"fault"`
 }
 
 // NewGetBookResponseBody builds the HTTP response body from the result of the
@@ -34,13 +112,59 @@ func NewGetBookResponseBody(res *bookviews.BookResultView) *GetBookResponseBody 
 		ID:          res.ID,
 		Title:       res.Title,
 		Author:      res.Author,
+		BookCover:   res.BookCover,
 		PublishedAt: res.PublishedAt,
 	}
-	if res.BookCover != nil {
-		body.BookCover = make([][]byte, len(res.BookCover))
-		for i, val := range res.BookCover {
-			body.BookCover[i] = val
-		}
+	return body
+}
+
+// NewPostBookResponseBodyResultOperation builds the HTTP response body from
+// the result of the "postBook" endpoint of the "book" service.
+func NewPostBookResponseBodyResultOperation(res *bookviews.BookResultView) *PostBookResponseBodyResultOperation {
+	body := &PostBookResponseBodyResultOperation{
+		ID: res.ID,
+	}
+	return body
+}
+
+// NewGetBookNotFoundResponseBody builds the HTTP response body from the result
+// of the "getBook" endpoint of the "book" service.
+func NewGetBookNotFoundResponseBody(res *goa.ServiceError) *GetBookNotFoundResponseBody {
+	body := &GetBookNotFoundResponseBody{
+		Name:      res.Name,
+		ID:        res.ID,
+		Message:   res.Message,
+		Temporary: res.Temporary,
+		Timeout:   res.Timeout,
+		Fault:     res.Fault,
+	}
+	return body
+}
+
+// NewGetBookBadRequestResponseBody builds the HTTP response body from the
+// result of the "getBook" endpoint of the "book" service.
+func NewGetBookBadRequestResponseBody(res *goa.ServiceError) *GetBookBadRequestResponseBody {
+	body := &GetBookBadRequestResponseBody{
+		Name:      res.Name,
+		ID:        res.ID,
+		Message:   res.Message,
+		Temporary: res.Temporary,
+		Timeout:   res.Timeout,
+		Fault:     res.Fault,
+	}
+	return body
+}
+
+// NewPostBookBadRequestResponseBody builds the HTTP response body from the
+// result of the "postBook" endpoint of the "book" service.
+func NewPostBookBadRequestResponseBody(res *goa.ServiceError) *PostBookBadRequestResponseBody {
+	body := &PostBookBadRequestResponseBody{
+		Name:      res.Name,
+		ID:        res.ID,
+		Message:   res.Message,
+		Temporary: res.Temporary,
+		Timeout:   res.Timeout,
+		Fault:     res.Fault,
 	}
 	return body
 }
@@ -49,6 +173,19 @@ func NewGetBookResponseBody(res *bookviews.BookResultView) *GetBookResponseBody 
 func NewGetBookPayload(bookID int) *book.GetBookPayload {
 	v := &book.GetBookPayload{}
 	v.BookID = bookID
+
+	return v
+}
+
+// NewPostBookBookResult builds a book service postBook endpoint payload.
+func NewPostBookBookResult(body *PostBookRequestBody) *book.BookResult {
+	v := &book.BookResult{
+		ID:          body.ID,
+		Title:       body.Title,
+		Author:      body.Author,
+		BookCover:   body.BookCover,
+		PublishedAt: body.PublishedAt,
+	}
 
 	return v
 }

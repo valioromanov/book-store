@@ -15,20 +15,40 @@ import (
 
 // Client is the "book" service client.
 type Client struct {
-	GetBookEndpoint goa.Endpoint
+	GetBookEndpoint  goa.Endpoint
+	PostBookEndpoint goa.Endpoint
 }
 
 // NewClient initializes a "book" service client given the endpoints.
-func NewClient(getBook goa.Endpoint) *Client {
+func NewClient(getBook, postBook goa.Endpoint) *Client {
 	return &Client{
-		GetBookEndpoint: getBook,
+		GetBookEndpoint:  getBook,
+		PostBookEndpoint: postBook,
 	}
 }
 
 // GetBook calls the "getBook" endpoint of the "book" service.
+// GetBook may return the following errors:
+//   - "NotFound" (type *goa.ServiceError)
+//   - "BadRequest" (type *goa.ServiceError)
+//   - error: internal error
 func (c *Client) GetBook(ctx context.Context, p *GetBookPayload) (res *BookResult, err error) {
 	var ires any
 	ires, err = c.GetBookEndpoint(ctx, p)
+	if err != nil {
+		return
+	}
+	return ires.(*BookResult), nil
+}
+
+// PostBook calls the "postBook" endpoint of the "book" service.
+// PostBook may return the following errors:
+//   - "NotFound" (type *goa.ServiceError)
+//   - "BadRequest" (type *goa.ServiceError)
+//   - error: internal error
+func (c *Client) PostBook(ctx context.Context, p *BookResult) (res *BookResult, err error) {
+	var ires any
+	ires, err = c.PostBookEndpoint(ctx, p)
 	if err != nil {
 		return
 	}
