@@ -20,3 +20,8 @@ func GetBookBookPath(bookID int) string {
 func PostBookBookPath() string {
 	return "/book"
 }
+
+// PatchBookBookPath returns the URL path to the book service patchBook HTTP endpoint.
+func PatchBookBookPath(id int) string {
+	return fmt.Sprintf("/book/%v", id)
+}

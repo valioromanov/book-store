@@ -21,6 +21,7 @@ type Server struct {
 	Mounts             []*MountPoint
 	GetBook            http.Handler
 	PostBook           http.Handler
+	PatchBook          http.Handler
 	GenHTTPOpenapiJSON http.Handler
 }
 
@@ -57,10 +58,12 @@ func New(
 		Mounts: []*MountPoint{
 			{"GetBook", "GET", "/book/{bookID}"},
 			{"PostBook", "POST", "/book"},
+			{"PatchBook", "PATCH", "/book/{id}"},
 			{"./gen/http/openapi.json", "GET", "/swagger.json"},
 		},
 		GetBook:            NewGetBookHandler(e.GetBook, mux, decoder, encoder, errhandler, formatter),
 		PostBook:           NewPostBookHandler(e.PostBook, mux, decoder, encoder, errhandler, formatter),
+		PatchBook:          NewPatchBookHandler(e.PatchBook, mux, decoder, encoder, errhandler, formatter),
 		GenHTTPOpenapiJSON: http.FileServer(fileSystemGenHTTPOpenapiJSON),
 	}
 }
@@ -72,6 +75,7 @@ func (s *Server) Service() string { return "book" }
 func (s *Server) Use(m func(http.Handler) http.Handler) {
 	s.GetBook = m(s.GetBook)
 	s.PostBook = m(s.PostBook)
+	s.PatchBook = m(s.PatchBook)
 }
 
 // MethodNames returns the methods served.
@@ -81,6 +85,7 @@ func (s *Server) MethodNames() []string { return book.MethodNames[:] }
 func Mount(mux goahttp.Muxer, h *Server) {
 	MountGetBookHandler(mux, h.GetBook)
 	MountPostBookHandler(mux, h.PostBook)
+	MountPatchBookHandler(mux, h.PatchBook)
 	MountGenHTTPOpenapiJSON(mux, goahttp.Replace("", "/./gen/http/openapi.json", h.GenHTTPOpenapiJSON))
 }
 
@@ -170,6 +175,57 @@ func NewPostBookHandler(
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		ctx := context.WithValue(r.Context(), goahttp.AcceptTypeKey, r.Header.Get("Accept"))
 		ctx = context.WithValue(ctx, goa.MethodKey, "postBook")
+		ctx = context.WithValue(ctx, goa.ServiceKey, "book")
+		payload, err := decodeRequest(r)
+		if err != nil {
+			if err := encodeError(ctx, w, err); err != nil {
+				errhandler(ctx, w, err)
+			}
+			return
+		}
+		res, err := endpoint(ctx, payload)
+		if err != nil {
+			if err := encodeError(ctx, w, err); err != nil {
+				errhandler(ctx, w, err)
+			}
+			return
+		}
+		if err := encodeResponse(ctx, w, res); err != nil {
+			errhandler(ctx, w, err)
+		}
+	})
+}
+
+// MountPatchBookHandler configures the mux to serve the "book" service
+// "patchBook" endpoint.
+func MountPatchBookHandler(mux goahttp.Muxer, h http.Handler) {
+	f, ok := h.(http.HandlerFunc)
+	if !ok {
+		f = func(w http.ResponseWriter, r *http.Request) {
+			h.ServeHTTP(w, r)
+		}
+	}
+	mux.Handle("PATCH", "/book/{id}", f)
+}
+
+// NewPatchBookHandler creates a HTTP handler which loads the HTTP request and
+// calls the "book" service "patchBook" endpoint.
+func NewPatchBookHandler(
+	endpoint goa.Endpoint,
+	mux goahttp.Muxer,
+	decoder func(*http.Request) goahttp.Decoder,
+	encoder func(context.Context, http.ResponseWriter) goahttp.Encoder,
+	errhandler func(context.Context, http.ResponseWriter, error),
+	formatter func(ctx context.Context, err error) goahttp.Statuser,
+) http.Handler {
+	var (
+		decodeRequest  = DecodePatchBookRequest(mux, decoder)
+		encodeResponse = EncodePatchBookResponse(encoder)
+		encodeError    = EncodePatchBookError(encoder, formatter)
+	)
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		ctx := context.WithValue(r.Context(), goahttp.AcceptTypeKey, r.Header.Get("Accept"))
+		ctx = context.WithValue(ctx, goa.MethodKey, "patchBook")
 		ctx = context.WithValue(ctx, goa.ServiceKey, "book")
 		payload, err := decodeRequest(r)
 		if err != nil {

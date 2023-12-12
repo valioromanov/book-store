@@ -207,3 +207,105 @@ func DecodePostBookResponse(decoder func(*http.Response) goahttp.Decoder, restor
 		}
 	}
 }
+
+// BuildPatchBookRequest instantiates a HTTP request object with method and
+// path set to call the "book" service "patchBook" endpoint
+func (c *Client) BuildPatchBookRequest(ctx context.Context, v any) (*http.Request, error) {
+	var (
+		id int
+	)
+	{
+		p, ok := v.(*book.BookReq)
+		if !ok {
+			return nil, goahttp.ErrInvalidType("book", "patchBook", "*book.BookReq", v)
+		}
+		if p.ID != nil {
+			id = *p.ID
+		}
+	}
+	u := &url.URL{Scheme: c.scheme, Host: c.host, Path: PatchBookBookPath(id)}
+	req, err := http.NewRequest("PATCH", u.String(), nil)
+	if err != nil {
+		return nil, goahttp.ErrInvalidURL("book", "patchBook", u.String(), err)
+	}
+	if ctx != nil {
+		req = req.WithContext(ctx)
+	}
+
+	return req, nil
+}
+
+// EncodePatchBookRequest returns an encoder for requests sent to the book
+// patchBook server.
+func EncodePatchBookRequest(encoder func(*http.Request) goahttp.Encoder) func(*http.Request, any) error {
+	return func(req *http.Request, v any) error {
+		p, ok := v.(*book.BookReq)
+		if !ok {
+			return goahttp.ErrInvalidType("book", "patchBook", "*book.BookReq", v)
+		}
+		body := NewPatchBookRequestBody(p)
+		if err := encoder(req).Encode(&body); err != nil {
+			return goahttp.ErrEncodingError("book", "patchBook", err)
+		}
+		return nil
+	}
+}
+
+// DecodePatchBookResponse returns a decoder for responses returned by the book
+// patchBook endpoint. restoreBody controls whether the response body should be
+// restored after having been read.
+// DecodePatchBookResponse may return the following errors:
+//   - "BadRequest" (type *goa.ServiceError): http.StatusBadRequest
+//   - "NotFound" (type *goa.ServiceError): http.StatusNotFound
+//   - error: internal error
+func DecodePatchBookResponse(decoder func(*http.Response) goahttp.Decoder, restoreBody bool) func(*http.Response) (any, error) {
+	return func(resp *http.Response) (any, error) {
+		if restoreBody {
+			b, err := io.ReadAll(resp.Body)
+			if err != nil {
+				return nil, err
+			}
+			resp.Body = io.NopCloser(bytes.NewBuffer(b))
+			defer func() {
+				resp.Body = io.NopCloser(bytes.NewBuffer(b))
+			}()
+		} else {
+			defer resp.Body.Close()
+		}
+		switch resp.StatusCode {
+		case http.StatusNoContent:
+			return nil, nil
+		case http.StatusBadRequest:
+			var (
+				body PatchBookBadRequestResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("book", "patchBook", err)
+			}
+			err = ValidatePatchBookBadRequestResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("book", "patchBook", err)
+			}
+			return nil, NewPatchBookBadRequest(&body)
+		case http.StatusNotFound:
+			var (
+				body PatchBookNotFoundResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("book", "patchBook", err)
+			}
+			err = ValidatePatchBookNotFoundResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("book", "patchBook", err)
+			}
+			return nil, NewPatchBookNotFound(&body)
+		default:
+			body, _ := io.ReadAll(resp.Body)
+			return nil, goahttp.ErrInvalidResponse("book", "patchBook", resp.StatusCode, string(body))
+		}
+	}
+}

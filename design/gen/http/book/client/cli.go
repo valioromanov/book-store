@@ -41,15 +41,48 @@ func BuildPostBookPayload(bookPostBookBody string) (*book.BookReq, error) {
 	{
 		err = json.Unmarshal([]byte(bookPostBookBody), &body)
 		if err != nil {
-			return nil, fmt.Errorf("invalid JSON for body, \nerror: %s, \nexample of valid JSON:\n%s", err, "'{\n      \"author\": \"Magni officia voluptatem voluptate.\",\n      \"bookCover\": \"VXQgZXQu\",\n      \"publishedAt\": \"Modi officia inventore aut fuga.\",\n      \"title\": \"Voluptatum dicta molestiae veniam.\"\n   }'")
+			return nil, fmt.Errorf("invalid JSON for body, \nerror: %s, \nexample of valid JSON:\n%s", err, "'{\n      \"author\": \"Magni officia voluptatem voluptate.\",\n      \"bookCover\": \"VXQgZXQu\",\n      \"id\": 1839345345543455348,\n      \"publishedAt\": \"Modi officia inventore aut fuga.\",\n      \"title\": \"Dicta molestiae veniam.\"\n   }'")
 		}
 	}
 	v := &book.BookReq{
+		ID:          body.ID,
 		Title:       body.Title,
 		Author:      body.Author,
 		BookCover:   body.BookCover,
 		PublishedAt: body.PublishedAt,
 	}
+
+	return v, nil
+}
+
+// BuildPatchBookPayload builds the payload for the book patchBook endpoint
+// from CLI flags.
+func BuildPatchBookPayload(bookPatchBookBody string, bookPatchBookID string) (*book.BookReq, error) {
+	var err error
+	var body PatchBookRequestBody
+	{
+		err = json.Unmarshal([]byte(bookPatchBookBody), &body)
+		if err != nil {
+			return nil, fmt.Errorf("invalid JSON for body, \nerror: %s, \nexample of valid JSON:\n%s", err, "'{\n      \"author\": \"Et iusto.\",\n      \"bookCover\": \"TmlzaSBjdW0gc2ludC4=\",\n      \"id\": 2697799264669600201,\n      \"publishedAt\": \"Cum odit ab dignissimos id amet.\",\n      \"title\": \"Dicta labore.\"\n   }'")
+		}
+	}
+	var id int
+	{
+		var v int64
+		v, err = strconv.ParseInt(bookPatchBookID, 10, strconv.IntSize)
+		id = int(v)
+		if err != nil {
+			return nil, fmt.Errorf("invalid value for id, must be INT")
+		}
+	}
+	v := &book.BookReq{
+		ID:          body.ID,
+		Title:       body.Title,
+		Author:      body.Author,
+		BookCover:   body.BookCover,
+		PublishedAt: body.PublishedAt,
+	}
+	v.ID = &id
 
 	return v, nil
 }

@@ -71,3 +71,7 @@ func (c *Controller) PostBook(context context.Context, request *book.BookReq) (*
 	}
 	return &res, nil
 }
+
+func (c *Controller) PatchBook(context.Context, *book.BookReq) (err error) {
+	return nil
+}

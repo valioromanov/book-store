@@ -84,6 +84,21 @@ var _ = Service("book", func() {
 		})
 	})
 
+	Method("patchBook", func() {
+		Payload(BookReq)
+		Error("NotFound")
+		Error("BadRequest")
+		Result(Empty)
+
+		HTTP(func() {
+			PATCH("/book/{id}")
+			Body(BookReq)
+			Response(StatusNoContent)
+			Response("BadRequest", StatusBadRequest)
+			Response("NotFound", StatusNotFound)
+		})
+	})
+
 	// Serve the file with relative path ./gen/http/openapi.json for
 	// requests sent to /swagger.json.
 	Files("/swagger.json", "./gen/http/openapi.json")
@@ -91,7 +106,7 @@ var _ = Service("book", func() {
 
 var BookReq = Type("BookReq", func() {
 	Description("A single book response")
-
+	Attribute("id", Int)
 	Attribute("title", String)
 	Attribute("author", String)
 	Attribute("bookCover", Bytes)

@@ -22,7 +22,7 @@ import (
 //
 //	command (subcommand1|subcommand2|...)
 func UsageCommands() string {
-	return `book (get-book|post-book)
+	return `book (get-book|post-book|patch-book)
 `
 }
 
@@ -49,10 +49,15 @@ func ParseEndpoint(
 
 		bookPostBookFlags    = flag.NewFlagSet("post-book", flag.ExitOnError)
 		bookPostBookBodyFlag = bookPostBookFlags.String("body", "REQUIRED", "")
+
+		bookPatchBookFlags    = flag.NewFlagSet("patch-book", flag.ExitOnError)
+		bookPatchBookBodyFlag = bookPatchBookFlags.String("body", "REQUIRED", "")
+		bookPatchBookIDFlag   = bookPatchBookFlags.String("id", "REQUIRED", "")
 	)
 	bookFlags.Usage = bookUsage
 	bookGetBookFlags.Usage = bookGetBookUsage
 	bookPostBookFlags.Usage = bookPostBookUsage
+	bookPatchBookFlags.Usage = bookPatchBookUsage
 
 	if err := flag.CommandLine.Parse(os.Args[1:]); err != nil {
 		return nil, nil, err
@@ -94,6 +99,9 @@ func ParseEndpoint(
 			case "post-book":
 				epf = bookPostBookFlags
 
+			case "patch-book":
+				epf = bookPatchBookFlags
+
 			}
 
 		}
@@ -125,6 +133,9 @@ func ParseEndpoint(
 			case "post-book":
 				endpoint = c.PostBook()
 				data, err = bookc.BuildPostBookPayload(*bookPostBookBodyFlag)
+			case "patch-book":
+				endpoint = c.PatchBook()
+				data, err = bookc.BuildPatchBookPayload(*bookPatchBookBodyFlag, *bookPatchBookIDFlag)
 			}
 		}
 	}
@@ -144,6 +155,7 @@ Usage:
 COMMAND:
     get-book: GetBook implements getBook.
     post-book: PostBook implements postBook.
+    patch-book: PatchBook implements patchBook.
 
 Additional help:
     %[1]s book COMMAND --help
@@ -170,8 +182,27 @@ Example:
     %[1]s book post-book --body '{
       "author": "Magni officia voluptatem voluptate.",
       "bookCover": "VXQgZXQu",
+      "id": 1839345345543455348,
       "publishedAt": "Modi officia inventore aut fuga.",
-      "title": "Voluptatum dicta molestiae veniam."
+      "title": "Dicta molestiae veniam."
    }'
+`, os.Args[0])
+}
+
+func bookPatchBookUsage() {
+	fmt.Fprintf(os.Stderr, `%[1]s [flags] book patch-book -body JSON -id INT
+
+PatchBook implements patchBook.
+    -body JSON: 
+    -id INT: 
+
+Example:
+    %[1]s book patch-book --body '{
+      "author": "Et iusto.",
+      "bookCover": "TmlzaSBjdW0gc2ludC4=",
+      "id": 2697799264669600201,
+      "publishedAt": "Cum odit ab dignissimos id amet.",
+      "title": "Dicta labore."
+   }' --id 5889785589840037587
 `, os.Args[0])
 }
