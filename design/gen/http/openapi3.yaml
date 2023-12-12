@@ -1,0 +1,336 @@
+openapi: 3.0.3
+info:
+    title: Book Service
+    description: Service that provides CRUD operations for a book
+    version: "1.0"
+servers:
+    - url: http://localhost:8000/book
+      description: book hosts the Book Service.
+paths:
+    /book/{bookID}:
+        get:
+            tags:
+                - book
+            summary: getBook book
+            operationId: book#getBook
+            parameters:
+                - name: bookID
+                  in: path
+                  description: Book ID
+                  required: true
+                  schema:
+                    type: integer
+                    description: Book ID
+                    example: 2005033427430483122
+                    format: int64
+                  example: 1149341788413307338
+            responses:
+                "200":
+                    description: OK response.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/GetBookResponseBody'
+                            example:
+                                author: Similique molestias ipsum.
+                                bookCover:
+                                    - - 86
+                                      - 101
+                                      - 114
+                                      - 105
+                                      - 116
+                                      - 97
+                                      - 116
+                                      - 105
+                                      - 115
+                                      - 32
+                                      - 100
+                                      - 105
+                                      - 99
+                                      - 116
+                                      - 97
+                                      - 32
+                                      - 110
+                                      - 105
+                                      - 104
+                                      - 105
+                                      - 108
+                                      - 46
+                                    - - 69
+                                      - 116
+                                      - 32
+                                      - 101
+                                      - 108
+                                      - 105
+                                      - 103
+                                      - 101
+                                      - 110
+                                      - 100
+                                      - 105
+                                      - 46
+                                    - - 81
+                                      - 117
+                                      - 111
+                                      - 32
+                                      - 97
+                                      - 99
+                                      - 99
+                                      - 117
+                                      - 115
+                                      - 97
+                                      - 110
+                                      - 116
+                                      - 105
+                                      - 117
+                                      - 109
+                                      - 32
+                                      - 118
+                                      - 101
+                                      - 108
+                                      - 105
+                                      - 116
+                                      - 32
+                                      - 99
+                                      - 117
+                                      - 112
+                                      - 105
+                                      - 100
+                                      - 105
+                                      - 116
+                                      - 97
+                                      - 116
+                                      - 101
+                                      - 32
+                                      - 109
+                                      - 97
+                                      - 103
+                                      - 110
+                                      - 105
+                                      - 32
+                                      - 97
+                                      - 110
+                                      - 105
+                                      - 109
+                                      - 105
+                                      - 46
+                                id: 8844241845712161696
+                                publishedAt: Error veniam libero omnis odit.
+                                title: Ratione itaque fuga.
+    /swagger.json:
+        get:
+            tags:
+                - book
+            summary: Download ./gen/http/openapi.json
+            operationId: book#/swagger.json
+            responses:
+                "200":
+                    description: File downloaded
+components:
+    schemas:
+        GetBookResponseBody:
+            type: object
+            properties:
+                author:
+                    type: string
+                    description: author of the book
+                    example: Illum sunt quae itaque.
+                bookCover:
+                    type: array
+                    items:
+                        type: string
+                        example:
+                            - 82
+                            - 101
+                            - 112
+                            - 101
+                            - 108
+                            - 108
+                            - 97
+                            - 116
+                            - 32
+                            - 115
+                            - 105
+                            - 109
+                            - 105
+                            - 108
+                            - 105
+                            - 113
+                            - 117
+                            - 101
+                            - 46
+                        format: binary
+                    description: cover of the book
+                    example:
+                        - - 69
+                          - 116
+                          - 32
+                          - 110
+                          - 111
+                          - 98
+                          - 105
+                          - 115
+                          - 32
+                          - 101
+                          - 110
+                          - 105
+                          - 109
+                          - 32
+                          - 105
+                          - 108
+                          - 108
+                          - 117
+                          - 109
+                          - 32
+                          - 99
+                          - 117
+                          - 108
+                          - 112
+                          - 97
+                          - 32
+                          - 116
+                          - 101
+                          - 109
+                          - 112
+                          - 111
+                          - 114
+                          - 101
+                          - 46
+                        - - 76
+                          - 97
+                          - 98
+                          - 111
+                          - 114
+                          - 117
+                          - 109
+                          - 32
+                          - 113
+                          - 117
+                          - 105
+                          - 46
+                        - - 73
+                          - 115
+                          - 116
+                          - 101
+                          - 32
+                          - 99
+                          - 117
+                          - 109
+                          - 113
+                          - 117
+                          - 101
+                          - 32
+                          - 109
+                          - 111
+                          - 108
+                          - 101
+                          - 115
+                          - 116
+                          - 105
+                          - 97
+                          - 101
+                          - 32
+                          - 118
+                          - 111
+                          - 108
+                          - 117
+                          - 112
+                          - 116
+                          - 97
+                          - 116
+                          - 101
+                          - 115
+                          - 32
+                          - 114
+                          - 101
+                          - 112
+                          - 101
+                          - 108
+                          - 108
+                          - 97
+                          - 116
+                          - 32
+                          - 116
+                          - 101
+                          - 109
+                          - 112
+                          - 111
+                          - 114
+                          - 105
+                          - 98
+                          - 117
+                          - 115
+                          - 46
+                id:
+                    type: integer
+                    description: ID of the book
+                    example: 2702875022473228679
+                    format: int64
+                publishedAt:
+                    type: string
+                    description: cover of the book
+                    example: Nisi nemo.
+                title:
+                    type: string
+                    description: ' of the book'
+                    example: Natus qui similique inventore et dolores.
+            description: GetBookResponseBody result type (default view)
+            example:
+                author: Voluptatem aut eos.
+                bookCover:
+                    - - 69
+                      - 120
+                      - 99
+                      - 101
+                      - 112
+                      - 116
+                      - 117
+                      - 114
+                      - 105
+                      - 32
+                      - 97
+                      - 117
+                      - 116
+                      - 32
+                      - 113
+                      - 117
+                      - 105
+                      - 97
+                      - 32
+                      - 115
+                      - 117
+                      - 110
+                      - 116
+                      - 32
+                      - 97
+                      - 115
+                      - 115
+                      - 117
+                      - 109
+                      - 101
+                      - 110
+                      - 100
+                      - 97
+                      - 32
+                      - 97
+                      - 100
+                      - 105
+                      - 112
+                      - 105
+                      - 115
+                      - 99
+                      - 105
+                      - 46
+                    - - 69
+                      - 105
+                      - 117
+                      - 115
+                      - 32
+                      - 101
+                      - 97
+                      - 46
+                id: 4136944418154145309
+                publishedAt: Distinctio aliquid provident.
+                title: Dolorem eligendi ut labore.
+tags:
+    - name: book
+      description: The book service performs operations for books
