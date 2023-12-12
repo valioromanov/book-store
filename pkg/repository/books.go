@@ -43,3 +43,20 @@ func (br *BookRepo) InsertBook(book BookDB) (int, error) {
 
 	return book.ID, nil
 }
+
+func (br *BookRepo) UpdateBook(book BookDB) error {
+	if book.ID == 0 {
+		return fmt.Errorf("no book id provided")
+	}
+
+	tx := br.db.Save(&book)
+
+	if tx.Error != nil {
+		return fmt.Errorf("error while updating a record: %w", tx.Error)
+	}
+
+	if tx.RowsAffected == 0 {
+		return fmt.Errorf("no data found")
+	}
+	return nil
+}
