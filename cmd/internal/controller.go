@@ -12,6 +12,7 @@ type BookRepository interface {
 	FindById(id int) (repository.BookDB, error)
 	InsertBook(repository.BookDB) (int, error)
 	UpdateBook(repository.BookDB) error
+	DeleteBook(int) error
 }
 
 type Controller struct {
@@ -97,4 +98,11 @@ func (c *Controller) PatchBook(context context.Context, request *book.BookPathcR
 		bookDB.PublishedAt = publishedAt
 	}
 	return c.repo.UpdateBook(bookDB)
+}
+
+func (c *Controller) DeleteBook(context context.Context, request *book.DeleteBookPayload) error {
+	if request.BookID == 0 {
+		return book.MakeBadRequest(fmt.Errorf("id not provided"))
+	}
+	return c.repo.DeleteBook(request.BookID)
 }
