@@ -20,25 +20,55 @@ paths:
                         schema:
                             $ref: '#/components/schemas/BookReq'
                         example:
-                            author: Quidem asperiores.
+                            author: Iusto dolores impedit hic.
                             bookCover:
-                                - 65
-                                - 100
-                                - 105
-                                - 112
-                                - 105
-                                - 115
-                                - 99
-                                - 105
+                                - 77
+                                - 97
+                                - 103
+                                - 110
+                                - 97
+                                - 109
                                 - 32
+                                - 101
+                                - 116
+                                - 32
+                                - 118
+                                - 101
+                                - 108
+                                - 32
+                                - 117
+                                - 116
+                                - 32
+                                - 109
+                                - 111
+                                - 108
+                                - 101
+                                - 115
+                                - 116
+                                - 105
+                                - 97
+                                - 101
+                                - 32
+                                - 99
+                                - 111
+                                - 110
+                                - 115
+                                - 101
                                 - 113
                                 - 117
-                                - 111
-                                - 100
+                                - 117
+                                - 110
+                                - 116
+                                - 117
+                                - 114
+                                - 32
+                                - 101
+                                - 115
+                                - 116
                                 - 46
-                            id: 9193006376374536106
-                            publishedAt: Sint reprehenderit ex sit accusantium velit qui.
-                            title: Itaque placeat labore cum sit illum suscipit.
+                            id: 8667407008821495540
+                            publishedAt: Labore ea voluptas repellendus eaque dignissimos animi.
+                            title: Consequuntur sint.
             responses:
                 "200":
                     description: OK response.
@@ -47,7 +77,7 @@ paths:
                             schema:
                                 $ref: '#/components/schemas/PostBookResponseBodyResultOperation'
                             example:
-                                id: 6594385603876165635
+                                id: 4021351162157412593
                 "400":
                     description: 'BadRequest: Bad Request response.'
                     content:
@@ -55,6 +85,37 @@ paths:
                             schema:
                                 $ref: '#/components/schemas/Error'
     /book/{bookID}:
+        delete:
+            tags:
+                - book
+            summary: deleteBook book
+            operationId: book#deleteBook
+            parameters:
+                - name: bookID
+                  in: path
+                  description: Book ID
+                  required: true
+                  schema:
+                    type: integer
+                    description: Book ID
+                    example: 4954887583850952574
+                    format: int64
+                  example: 7991635307104396
+            responses:
+                "204":
+                    description: No Content response.
+                "400":
+                    description: 'BadRequest: Bad Request response.'
+                    content:
+                        application/vnd.goa.error:
+                            schema:
+                                $ref: '#/components/schemas/Error'
+                "404":
+                    description: 'NotFound: Not Found response.'
+                    content:
+                        application/vnd.goa.error:
+                            schema:
+                                $ref: '#/components/schemas/Error'
         get:
             tags:
                 - book
@@ -68,9 +129,9 @@ paths:
                   schema:
                     type: integer
                     description: Book ID
-                    example: 3050241796954151231
+                    example: 8250869128896910841
                     format: int64
-                  example: 4253550530100022039
+                  example: 5415835647726949094
             responses:
                 "200":
                     description: OK response.
@@ -79,38 +140,36 @@ paths:
                             schema:
                                 $ref: '#/components/schemas/GetBookResponseBody'
                             example:
-                                author: Iusto eveniet id nemo eum beatae.
+                                author: Magnam et sed.
                                 bookCover:
-                                    - 67
-                                    - 111
-                                    - 114
-                                    - 112
-                                    - 111
-                                    - 114
-                                    - 105
+                                    - 81
+                                    - 117
+                                    - 97
                                     - 115
+                                    - 32
+                                    - 101
+                                    - 116
+                                    - 32
+                                    - 115
+                                    - 117
+                                    - 115
+                                    - 99
+                                    - 105
+                                    - 112
+                                    - 105
+                                    - 116
                                     - 32
                                     - 100
                                     - 111
                                     - 108
                                     - 111
                                     - 114
-                                    - 117
-                                    - 109
-                                    - 32
-                                    - 117
-                                    - 116
-                                    - 32
                                     - 101
-                                    - 116
-                                    - 32
-                                    - 113
-                                    - 117
-                                    - 111
+                                    - 109
                                     - 46
-                                id: 8945526493494502635
-                                publishedAt: Dolorum et repellendus vero id voluptatem.
-                                title: Omnis odit vero.
+                                id: 7727578332832687041
+                                publishedAt: A beatae iusto odio aut sunt.
+                                title: Modi ex magnam quam in architecto.
                 "400":
                     description: 'BadRequest: Bad Request response.'
                     content:
@@ -135,9 +194,9 @@ paths:
                   required: true
                   schema:
                     type: integer
-                    example: 575026343872706558
+                    example: 2636260980682569943
                     format: int64
-                  example: 5565823076788288399
+                  example: 4066188650818790048
             requestBody:
                 required: true
                 content:
@@ -145,29 +204,59 @@ paths:
                         schema:
                             $ref: '#/components/schemas/BookPathcReq'
                         example:
-                            author: Ut tenetur ut inventore voluptates.
+                            author: Dolores culpa dolorem beatae accusamus praesentium.
                             bookCover:
-                                - 69
-                                - 97
+                                - 73
+                                - 108
+                                - 108
+                                - 111
                                 - 32
-                                - 97
-                                - 32
-                                - 97
-                                - 32
-                                - 114
-                                - 101
                                 - 99
-                                - 117
-                                - 115
-                                - 97
+                                - 111
                                 - 110
-                                - 100
-                                - 97
+                                - 115
                                 - 101
+                                - 113
+                                - 117
+                                - 97
+                                - 116
+                                - 117
+                                - 114
+                                - 32
+                                - 117
+                                - 116
+                                - 32
+                                - 113
+                                - 117
+                                - 111
+                                - 100
+                                - 32
+                                - 115
+                                - 117
+                                - 110
+                                - 116
+                                - 32
+                                - 100
+                                - 111
+                                - 108
+                                - 111
+                                - 114
+                                - 32
+                                - 100
+                                - 105
+                                - 103
+                                - 110
+                                - 105
+                                - 115
+                                - 115
+                                - 105
+                                - 109
+                                - 111
+                                - 115
                                 - 46
-                            id: 4007170647046532603
-                            publishedAt: Qui similique inventore et dolores quas.
-                            title: Perferendis ut rerum.
+                            id: 1472432940674706831
+                            publishedAt: Nesciunt velit ut officia quibusdam.
+                            title: Aperiam reprehenderit qui.
             responses:
                 "204":
                     description: No Content response.
@@ -199,149 +288,150 @@ components:
             properties:
                 author:
                     type: string
-                    example: Quo velit porro tempora consequatur atque.
+                    example: Facilis sit maiores earum rerum voluptatibus nesciunt.
                 bookCover:
                     type: string
                     example:
-                        - 81
-                        - 117
-                        - 105
+                        - 65
                         - 32
-                        - 101
-                        - 120
+                        - 102
+                        - 97
                         - 99
-                        - 101
-                        - 112
-                        - 116
-                        - 117
-                        - 114
-                        - 105
-                        - 32
-                        - 97
-                        - 98
-                        - 32
-                        - 101
-                        - 116
-                        - 32
                         - 105
                         - 108
-                        - 108
-                        - 117
-                        - 109
-                        - 32
-                        - 109
-                        - 97
-                        - 103
-                        - 110
                         - 105
-                        - 32
-                        - 118
-                        - 101
-                        - 108
-                        - 105
-                        - 116
+                        - 115
                         - 46
                     format: binary
                 id:
                     type: integer
-                    example: 155126561843934303
+                    example: 8300486124344867816
                     format: int64
                 publishedAt:
                     type: string
-                    example: Vel nemo.
+                    example: Eum quibusdam fugiat velit eius.
                 title:
                     type: string
-                    example: Eius quis a.
-            description: A single book response
+                    example: Expedita quia magni ut iste sapiente.
+            description: A single book request for patching
             example:
-                author: Sint tempore quam.
+                author: Illo perferendis quas dolores quos.
                 bookCover:
-                    - 79
-                    - 109
+                    - 80
+                    - 114
+                    - 111
+                    - 118
+                    - 105
+                    - 100
+                    - 101
                     - 110
+                    - 116
+                    - 32
+                    - 97
+                    - 112
+                    - 101
+                    - 114
+                    - 105
+                    - 97
+                    - 109
+                    - 32
+                    - 101
+                    - 116
+                    - 32
+                    - 115
+                    - 105
+                    - 116
+                    - 32
+                    - 114
+                    - 101
+                    - 105
+                    - 99
+                    - 105
+                    - 101
+                    - 110
+                    - 100
                     - 105
                     - 115
                     - 32
+                    - 112
                     - 97
-                    - 109
-                    - 101
+                    - 114
+                    - 105
+                    - 97
                     - 116
+                    - 117
+                    - 114
+                    - 32
+                    - 97
+                    - 110
+                    - 105
+                    - 109
+                    - 105
                     - 46
-                id: 7613149752686508322
-                publishedAt: Quia tenetur et officiis tenetur corporis.
-                title: Et mollitia animi.
+                id: 2467600697765602000
+                publishedAt: Molestias maiores consequatur a assumenda dolorem.
+                title: Quo alias nihil occaecati.
         BookReq:
             type: object
             properties:
                 author:
                     type: string
-                    example: Quia cum aliquid corporis.
+                    example: Et corrupti natus eum dignissimos.
                 bookCover:
                     type: string
                     example:
-                        - 80
-                        - 111
+                        - 86
+                        - 101
                         - 114
-                        - 114
-                        - 111
-                        - 32
-                        - 118
                         - 105
                         - 116
                         - 97
-                        - 101
-                        - 32
-                        - 118
-                        - 101
-                        - 108
-                        - 105
                         - 116
-                        - 32
-                        - 108
                         - 105
-                        - 98
-                        - 101
-                        - 114
-                        - 111
+                        - 115
+                        - 32
+                        - 99
+                        - 117
+                        - 108
+                        - 112
+                        - 97
                         - 46
                     format: binary
                 id:
                     type: integer
-                    example: 5163639737292373875
+                    example: 1779784324348302931
                     format: int64
                 publishedAt:
                     type: string
-                    example: Non quisquam delectus ea minima nihil ut.
+                    example: Enim numquam distinctio consequatur maxime omnis.
                 title:
                     type: string
-                    example: Aspernatur voluptatem.
-            description: A single book response
+                    example: Aut dolores et voluptate temporibus voluptate.
+            description: A single book request
             example:
-                author: Enim dolores optio animi ut.
+                author: Veritatis sint eaque.
                 bookCover:
-                    - 81
-                    - 117
-                    - 105
-                    - 32
-                    - 97
+                    - 85
                     - 116
-                    - 113
-                    - 117
-                    - 101
+                    - 32
+                    - 115
+                    - 105
+                    - 116
                     - 32
                     - 118
-                    - 101
-                    - 108
-                    - 105
-                    - 116
-                    - 32
-                    - 101
                     - 111
-                    - 115
+                    - 108
+                    - 117
+                    - 112
+                    - 116
+                    - 97
+                    - 116
+                    - 101
+                    - 109
                     - 46
-                id: 2745941563220750167
-                publishedAt: Quia quos optio quae repellat rerum harum.
-                title: Impedit doloremque velit.
+                id: 5731193398342378016
+                publishedAt: Ducimus magnam quo molestiae autem nihil.
+                title: Voluptatem consectetur.
             required:
                 - title
                 - author
@@ -371,14 +461,14 @@ components:
                 timeout:
                     type: boolean
                     description: Is the error a timeout?
-                    example: false
+                    example: true
             example:
-                fault: true
+                fault: false
                 id: 123abc
                 message: parameter 'p' must be an integer
                 name: bad_request
-                temporary: false
-                timeout: false
+                temporary: true
+                timeout: true
             required:
                 - name
                 - id
@@ -392,113 +482,99 @@ components:
                 author:
                     type: string
                     description: author of the book
-                    example: Pariatur harum.
+                    example: Quas a.
                 bookCover:
                     type: string
                     description: cover of the book
                     example:
-                        - 68
-                        - 101
-                        - 115
-                        - 101
-                        - 114
-                        - 117
-                        - 110
-                        - 116
-                        - 32
-                        - 97
-                        - 99
-                        - 99
-                        - 117
-                        - 115
-                        - 97
-                        - 110
-                        - 116
-                        - 105
-                        - 117
+                        - 79
                         - 109
-                        - 32
-                        - 101
-                        - 114
-                        - 114
-                        - 111
-                        - 114
-                        - 32
-                        - 111
-                        - 100
+                        - 110
                         - 105
-                        - 116
+                        - 115
                         - 32
+                        - 97
+                        - 116
                         - 113
                         - 117
-                        - 105
-                        - 32
-                        - 117
-                        - 110
-                        - 100
                         - 101
+                        - 32
+                        - 101
+                        - 110
+                        - 105
+                        - 109
+                        - 32
+                        - 110
+                        - 111
+                        - 98
+                        - 105
+                        - 115
+                        - 32
+                        - 101
+                        - 115
+                        - 116
                         - 46
                     format: binary
                 id:
                     type: integer
                     description: ID of the book
-                    example: 6239455515699825532
+                    example: 3702545344438457520
                     format: int64
                 publishedAt:
                     type: string
                     description: cover of the book
-                    example: Et ex.
+                    example: Tempore id necessitatibus accusamus reprehenderit.
                 title:
                     type: string
                     description: ' of the book'
-                    example: Nesciunt fuga ratione error.
+                    example: Velit expedita sunt et occaecati qui ea.
             description: GetBookResponseBody result type (default view)
             example:
-                author: Consequatur quaerat officiis tenetur omnis.
+                author: Voluptatum ipsam distinctio magnam quas.
                 bookCover:
-                    - 67
+                    - 82
+                    - 101
+                    - 109
+                    - 32
+                    - 115
                     - 117
+                    - 115
+                    - 99
+                    - 105
                     - 112
                     - 105
+                    - 116
+                    - 32
+                    - 99
+                    - 111
+                    - 110
+                    - 115
+                    - 101
+                    - 99
+                    - 116
+                    - 101
+                    - 116
+                    - 117
+                    - 114
+                    - 32
+                    - 115
+                    - 101
                     - 100
-                    - 105
-                    - 116
-                    - 97
-                    - 116
-                    - 101
-                    - 32
-                    - 110
-                    - 111
-                    - 110
-                    - 32
-                    - 110
-                    - 111
-                    - 110
-                    - 32
-                    - 101
-                    - 111
-                    - 115
-                    - 32
-                    - 115
-                    - 97
-                    - 101
-                    - 112
-                    - 101
                     - 46
-                id: 3103800760786290830
-                publishedAt: Magnam sunt perspiciatis qui veniam.
-                title: Voluptatum dolorum ipsum porro molestiae earum.
+                id: 5383296231845651626
+                publishedAt: Aut porro nulla eligendi praesentium ab quia.
+                title: Autem perspiciatis delectus dolor quia.
         PostBookResponseBodyResultOperation:
             type: object
             properties:
                 id:
                     type: integer
                     description: ID of the book
-                    example: 8212015093239399035
+                    example: 4688908708381009388
                     format: int64
             description: PostBookResponseBody result type (resultOperation view)
             example:
-                id: 6643382422910611374
+                id: 7784078469509444369
 tags:
     - name: book
       description: The book service performs operations for books

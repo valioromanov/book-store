@@ -29,6 +29,10 @@ type Client struct {
 	// endpoint.
 	PatchBookDoer goahttp.Doer
 
+	// DeleteBook Doer is the HTTP client used to make requests to the deleteBook
+	// endpoint.
+	DeleteBookDoer goahttp.Doer
+
 	// RestoreResponseBody controls whether the response bodies are reset after
 	// decoding so they can be read again.
 	RestoreResponseBody bool
@@ -52,6 +56,7 @@ func NewClient(
 		GetBookDoer:         doer,
 		PostBookDoer:        doer,
 		PatchBookDoer:       doer,
+		DeleteBookDoer:      doer,
 		RestoreResponseBody: restoreBody,
 		scheme:              scheme,
 		host:                host,
@@ -122,6 +127,25 @@ func (c *Client) PatchBook() goa.Endpoint {
 		resp, err := c.PatchBookDoer.Do(req)
 		if err != nil {
 			return nil, goahttp.ErrRequestError("book", "patchBook", err)
+		}
+		return decodeResponse(resp)
+	}
+}
+
+// DeleteBook returns an endpoint that makes HTTP requests to the book service
+// deleteBook server.
+func (c *Client) DeleteBook() goa.Endpoint {
+	var (
+		decodeResponse = DecodeDeleteBookResponse(c.decoder, c.RestoreResponseBody)
+	)
+	return func(ctx context.Context, v any) (any, error) {
+		req, err := c.BuildDeleteBookRequest(ctx, v)
+		if err != nil {
+			return nil, err
+		}
+		resp, err := c.DeleteBookDoer.Do(req)
+		if err != nil {
+			return nil, goahttp.ErrRequestError("book", "deleteBook", err)
 		}
 		return decodeResponse(resp)
 	}

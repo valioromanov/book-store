@@ -15,17 +15,19 @@ import (
 
 // Client is the "book" service client.
 type Client struct {
-	GetBookEndpoint   goa.Endpoint
-	PostBookEndpoint  goa.Endpoint
-	PatchBookEndpoint goa.Endpoint
+	GetBookEndpoint    goa.Endpoint
+	PostBookEndpoint   goa.Endpoint
+	PatchBookEndpoint  goa.Endpoint
+	DeleteBookEndpoint goa.Endpoint
 }
 
 // NewClient initializes a "book" service client given the endpoints.
-func NewClient(getBook, postBook, patchBook goa.Endpoint) *Client {
+func NewClient(getBook, postBook, patchBook, deleteBook goa.Endpoint) *Client {
 	return &Client{
-		GetBookEndpoint:   getBook,
-		PostBookEndpoint:  postBook,
-		PatchBookEndpoint: patchBook,
+		GetBookEndpoint:    getBook,
+		PostBookEndpoint:   postBook,
+		PatchBookEndpoint:  patchBook,
+		DeleteBookEndpoint: deleteBook,
 	}
 }
 
@@ -63,5 +65,15 @@ func (c *Client) PostBook(ctx context.Context, p *BookReq) (res *BookResult, err
 //   - error: internal error
 func (c *Client) PatchBook(ctx context.Context, p *BookPathcReq) (err error) {
 	_, err = c.PatchBookEndpoint(ctx, p)
+	return
+}
+
+// DeleteBook calls the "deleteBook" endpoint of the "book" service.
+// DeleteBook may return the following errors:
+//   - "NotFound" (type *goa.ServiceError)
+//   - "BadRequest" (type *goa.ServiceError)
+//   - error: internal error
+func (c *Client) DeleteBook(ctx context.Context, p *DeleteBookPayload) (err error) {
+	_, err = c.DeleteBookEndpoint(ctx, p)
 	return
 }

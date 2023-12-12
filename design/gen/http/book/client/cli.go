@@ -41,7 +41,7 @@ func BuildPostBookPayload(bookPostBookBody string) (*book.BookReq, error) {
 	{
 		err = json.Unmarshal([]byte(bookPostBookBody), &body)
 		if err != nil {
-			return nil, fmt.Errorf("invalid JSON for body, \nerror: %s, \nexample of valid JSON:\n%s", err, "'{\n      \"author\": \"Quidem asperiores.\",\n      \"bookCover\": \"QWRpcGlzY2kgcXVvZC4=\",\n      \"id\": 9193006376374536106,\n      \"publishedAt\": \"Sint reprehenderit ex sit accusantium velit qui.\",\n      \"title\": \"Itaque placeat labore cum sit illum suscipit.\"\n   }'")
+			return nil, fmt.Errorf("invalid JSON for body, \nerror: %s, \nexample of valid JSON:\n%s", err, "'{\n      \"author\": \"Iusto dolores impedit hic.\",\n      \"bookCover\": \"TWFnbmFtIGV0IHZlbCB1dCBtb2xlc3RpYWUgY29uc2VxdXVudHVyIGVzdC4=\",\n      \"id\": 8667407008821495540,\n      \"publishedAt\": \"Labore ea voluptas repellendus eaque dignissimos animi.\",\n      \"title\": \"Consequuntur sint.\"\n   }'")
 		}
 	}
 	v := &book.BookReq{
@@ -63,7 +63,7 @@ func BuildPatchBookPayload(bookPatchBookBody string, bookPatchBookID string) (*b
 	{
 		err = json.Unmarshal([]byte(bookPatchBookBody), &body)
 		if err != nil {
-			return nil, fmt.Errorf("invalid JSON for body, \nerror: %s, \nexample of valid JSON:\n%s", err, "'{\n      \"author\": \"Ut tenetur ut inventore voluptates.\",\n      \"bookCover\": \"RWEgYSBhIHJlY3VzYW5kYWUu\",\n      \"id\": 4007170647046532603,\n      \"publishedAt\": \"Qui similique inventore et dolores quas.\",\n      \"title\": \"Perferendis ut rerum.\"\n   }'")
+			return nil, fmt.Errorf("invalid JSON for body, \nerror: %s, \nexample of valid JSON:\n%s", err, "'{\n      \"author\": \"Dolores culpa dolorem beatae accusamus praesentium.\",\n      \"bookCover\": \"SWxsbyBjb25zZXF1YXR1ciB1dCBxdW9kIHN1bnQgZG9sb3IgZGlnbmlzc2ltb3Mu\",\n      \"id\": 1472432940674706831,\n      \"publishedAt\": \"Nesciunt velit ut officia quibusdam.\",\n      \"title\": \"Aperiam reprehenderit qui.\"\n   }'")
 		}
 	}
 	var id int
@@ -83,6 +83,25 @@ func BuildPatchBookPayload(bookPatchBookBody string, bookPatchBookID string) (*b
 		PublishedAt: body.PublishedAt,
 	}
 	v.ID = &id
+
+	return v, nil
+}
+
+// BuildDeleteBookPayload builds the payload for the book deleteBook endpoint
+// from CLI flags.
+func BuildDeleteBookPayload(bookDeleteBookBookID string) (*book.DeleteBookPayload, error) {
+	var err error
+	var bookID int
+	{
+		var v int64
+		v, err = strconv.ParseInt(bookDeleteBookBookID, 10, strconv.IntSize)
+		bookID = int(v)
+		if err != nil {
+			return nil, fmt.Errorf("invalid value for bookID, must be INT")
+		}
+	}
+	v := &book.DeleteBookPayload{}
+	v.BookID = bookID
 
 	return v, nil
 }

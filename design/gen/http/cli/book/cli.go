@@ -22,13 +22,13 @@ import (
 //
 //	command (subcommand1|subcommand2|...)
 func UsageCommands() string {
-	return `book (get-book|post-book|patch-book)
+	return `book (get-book|post-book|patch-book|delete-book)
 `
 }
 
 // UsageExamples produces an example of a valid invocation of the CLI tool.
 func UsageExamples() string {
-	return os.Args[0] + ` book get-book --book-id 2700465139880268394` + "\n" +
+	return os.Args[0] + ` book get-book --book-id 5828061526424051504` + "\n" +
 		""
 }
 
@@ -53,11 +53,15 @@ func ParseEndpoint(
 		bookPatchBookFlags    = flag.NewFlagSet("patch-book", flag.ExitOnError)
 		bookPatchBookBodyFlag = bookPatchBookFlags.String("body", "REQUIRED", "")
 		bookPatchBookIDFlag   = bookPatchBookFlags.String("id", "REQUIRED", "")
+
+		bookDeleteBookFlags      = flag.NewFlagSet("delete-book", flag.ExitOnError)
+		bookDeleteBookBookIDFlag = bookDeleteBookFlags.String("book-id", "REQUIRED", "Book ID")
 	)
 	bookFlags.Usage = bookUsage
 	bookGetBookFlags.Usage = bookGetBookUsage
 	bookPostBookFlags.Usage = bookPostBookUsage
 	bookPatchBookFlags.Usage = bookPatchBookUsage
+	bookDeleteBookFlags.Usage = bookDeleteBookUsage
 
 	if err := flag.CommandLine.Parse(os.Args[1:]); err != nil {
 		return nil, nil, err
@@ -102,6 +106,9 @@ func ParseEndpoint(
 			case "patch-book":
 				epf = bookPatchBookFlags
 
+			case "delete-book":
+				epf = bookDeleteBookFlags
+
 			}
 
 		}
@@ -136,6 +143,9 @@ func ParseEndpoint(
 			case "patch-book":
 				endpoint = c.PatchBook()
 				data, err = bookc.BuildPatchBookPayload(*bookPatchBookBodyFlag, *bookPatchBookIDFlag)
+			case "delete-book":
+				endpoint = c.DeleteBook()
+				data, err = bookc.BuildDeleteBookPayload(*bookDeleteBookBookIDFlag)
 			}
 		}
 	}
@@ -156,6 +166,7 @@ COMMAND:
     get-book: GetBook implements getBook.
     post-book: PostBook implements postBook.
     patch-book: PatchBook implements patchBook.
+    delete-book: DeleteBook implements deleteBook.
 
 Additional help:
     %[1]s book COMMAND --help
@@ -168,7 +179,7 @@ GetBook implements getBook.
     -book-id INT: Book ID
 
 Example:
-    %[1]s book get-book --book-id 2700465139880268394
+    %[1]s book get-book --book-id 5828061526424051504
 `, os.Args[0])
 }
 
@@ -180,11 +191,11 @@ PostBook implements postBook.
 
 Example:
     %[1]s book post-book --body '{
-      "author": "Quidem asperiores.",
-      "bookCover": "QWRpcGlzY2kgcXVvZC4=",
-      "id": 9193006376374536106,
-      "publishedAt": "Sint reprehenderit ex sit accusantium velit qui.",
-      "title": "Itaque placeat labore cum sit illum suscipit."
+      "author": "Iusto dolores impedit hic.",
+      "bookCover": "TWFnbmFtIGV0IHZlbCB1dCBtb2xlc3RpYWUgY29uc2VxdXVudHVyIGVzdC4=",
+      "id": 8667407008821495540,
+      "publishedAt": "Labore ea voluptas repellendus eaque dignissimos animi.",
+      "title": "Consequuntur sint."
    }'
 `, os.Args[0])
 }
@@ -198,11 +209,22 @@ PatchBook implements patchBook.
 
 Example:
     %[1]s book patch-book --body '{
-      "author": "Ut tenetur ut inventore voluptates.",
-      "bookCover": "RWEgYSBhIHJlY3VzYW5kYWUu",
-      "id": 4007170647046532603,
-      "publishedAt": "Qui similique inventore et dolores quas.",
-      "title": "Perferendis ut rerum."
-   }' --id 1526759246777953065
+      "author": "Dolores culpa dolorem beatae accusamus praesentium.",
+      "bookCover": "SWxsbyBjb25zZXF1YXR1ciB1dCBxdW9kIHN1bnQgZG9sb3IgZGlnbmlzc2ltb3Mu",
+      "id": 1472432940674706831,
+      "publishedAt": "Nesciunt velit ut officia quibusdam.",
+      "title": "Aperiam reprehenderit qui."
+   }' --id 8496140370273748150
+`, os.Args[0])
+}
+
+func bookDeleteBookUsage() {
+	fmt.Fprintf(os.Stderr, `%[1]s [flags] book delete-book -book-id INT
+
+DeleteBook implements deleteBook.
+    -book-id INT: Book ID
+
+Example:
+    %[1]s book delete-book --book-id 5252033384069499178
 `, os.Args[0])
 }

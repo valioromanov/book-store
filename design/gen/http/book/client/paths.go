@@ -25,3 +25,8 @@ func PostBookBookPath() string {
 func PatchBookBookPath(id int) string {
 	return fmt.Sprintf("/book/%v", id)
 }
+
+// DeleteBookBookPath returns the URL path to the book service deleteBook HTTP endpoint.
+func DeleteBookBookPath(bookID int) string {
+	return fmt.Sprintf("/book/%v", bookID)
+}

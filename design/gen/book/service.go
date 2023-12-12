@@ -22,6 +22,8 @@ type Service interface {
 	PostBook(context.Context, *BookReq) (res *BookResult, err error)
 	// PatchBook implements patchBook.
 	PatchBook(context.Context, *BookPathcReq) (err error)
+	// DeleteBook implements deleteBook.
+	DeleteBook(context.Context, *DeleteBookPayload) (err error)
 }
 
 // ServiceName is the name of the service as defined in the design. This is the
@@ -32,7 +34,7 @@ const ServiceName = "book"
 // MethodNames lists the service method names as defined in the design. These
 // are the same values that are set in the endpoint request contexts under the
 // MethodKey key.
-var MethodNames = [3]string{"getBook", "postBook", "patchBook"}
+var MethodNames = [4]string{"getBook", "postBook", "patchBook", "deleteBook"}
 
 // BookPathcReq is the payload type of the book service patchBook method.
 type BookPathcReq struct {
@@ -64,6 +66,12 @@ type BookResult struct {
 	BookCover []byte
 	// cover of the book
 	PublishedAt *string
+}
+
+// DeleteBookPayload is the payload type of the book service deleteBook method.
+type DeleteBookPayload struct {
+	// Book ID
+	BookID int
 }
 
 // GetBookPayload is the payload type of the book service getBook method.

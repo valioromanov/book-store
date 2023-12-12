@@ -15,17 +15,19 @@ import (
 
 // Endpoints wraps the "book" service endpoints.
 type Endpoints struct {
-	GetBook   goa.Endpoint
-	PostBook  goa.Endpoint
-	PatchBook goa.Endpoint
+	GetBook    goa.Endpoint
+	PostBook   goa.Endpoint
+	PatchBook  goa.Endpoint
+	DeleteBook goa.Endpoint
 }
 
 // NewEndpoints wraps the methods of the "book" service with endpoints.
 func NewEndpoints(s Service) *Endpoints {
 	return &Endpoints{
-		GetBook:   NewGetBookEndpoint(s),
-		PostBook:  NewPostBookEndpoint(s),
-		PatchBook: NewPatchBookEndpoint(s),
+		GetBook:    NewGetBookEndpoint(s),
+		PostBook:   NewPostBookEndpoint(s),
+		PatchBook:  NewPatchBookEndpoint(s),
+		DeleteBook: NewDeleteBookEndpoint(s),
 	}
 }
 
@@ -34,6 +36,7 @@ func (e *Endpoints) Use(m func(goa.Endpoint) goa.Endpoint) {
 	e.GetBook = m(e.GetBook)
 	e.PostBook = m(e.PostBook)
 	e.PatchBook = m(e.PatchBook)
+	e.DeleteBook = m(e.DeleteBook)
 }
 
 // NewGetBookEndpoint returns an endpoint function that calls the method
@@ -70,5 +73,14 @@ func NewPatchBookEndpoint(s Service) goa.Endpoint {
 	return func(ctx context.Context, req any) (any, error) {
 		p := req.(*BookPathcReq)
 		return nil, s.PatchBook(ctx, p)
+	}
+}
+
+// NewDeleteBookEndpoint returns an endpoint function that calls the method
+// "deleteBook" of service "book".
+func NewDeleteBookEndpoint(s Service) goa.Endpoint {
+	return func(ctx context.Context, req any) (any, error) {
+		p := req.(*DeleteBookPayload)
+		return nil, s.DeleteBook(ctx, p)
 	}
 }

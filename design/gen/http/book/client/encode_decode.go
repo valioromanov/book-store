@@ -309,3 +309,87 @@ func DecodePatchBookResponse(decoder func(*http.Response) goahttp.Decoder, resto
 		}
 	}
 }
+
+// BuildDeleteBookRequest instantiates a HTTP request object with method and
+// path set to call the "book" service "deleteBook" endpoint
+func (c *Client) BuildDeleteBookRequest(ctx context.Context, v any) (*http.Request, error) {
+	var (
+		bookID int
+	)
+	{
+		p, ok := v.(*book.DeleteBookPayload)
+		if !ok {
+			return nil, goahttp.ErrInvalidType("book", "deleteBook", "*book.DeleteBookPayload", v)
+		}
+		bookID = p.BookID
+	}
+	u := &url.URL{Scheme: c.scheme, Host: c.host, Path: DeleteBookBookPath(bookID)}
+	req, err := http.NewRequest("DELETE", u.String(), nil)
+	if err != nil {
+		return nil, goahttp.ErrInvalidURL("book", "deleteBook", u.String(), err)
+	}
+	if ctx != nil {
+		req = req.WithContext(ctx)
+	}
+
+	return req, nil
+}
+
+// DecodeDeleteBookResponse returns a decoder for responses returned by the
+// book deleteBook endpoint. restoreBody controls whether the response body
+// should be restored after having been read.
+// DecodeDeleteBookResponse may return the following errors:
+//   - "BadRequest" (type *goa.ServiceError): http.StatusBadRequest
+//   - "NotFound" (type *goa.ServiceError): http.StatusNotFound
+//   - error: internal error
+func DecodeDeleteBookResponse(decoder func(*http.Response) goahttp.Decoder, restoreBody bool) func(*http.Response) (any, error) {
+	return func(resp *http.Response) (any, error) {
+		if restoreBody {
+			b, err := io.ReadAll(resp.Body)
+			if err != nil {
+				return nil, err
+			}
+			resp.Body = io.NopCloser(bytes.NewBuffer(b))
+			defer func() {
+				resp.Body = io.NopCloser(bytes.NewBuffer(b))
+			}()
+		} else {
+			defer resp.Body.Close()
+		}
+		switch resp.StatusCode {
+		case http.StatusNoContent:
+			return nil, nil
+		case http.StatusBadRequest:
+			var (
+				body DeleteBookBadRequestResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("book", "deleteBook", err)
+			}
+			err = ValidateDeleteBookBadRequestResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("book", "deleteBook", err)
+			}
+			return nil, NewDeleteBookBadRequest(&body)
+		case http.StatusNotFound:
+			var (
+				body DeleteBookNotFoundResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("book", "deleteBook", err)
+			}
+			err = ValidateDeleteBookNotFoundResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("book", "deleteBook", err)
+			}
+			return nil, NewDeleteBookNotFound(&body)
+		default:
+			body, _ := io.ReadAll(resp.Body)
+			return nil, goahttp.ErrInvalidResponse("book", "deleteBook", resp.StatusCode, string(body))
+		}
+	}
+}

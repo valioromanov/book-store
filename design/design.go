@@ -6,7 +6,7 @@ import (
 	. "goa.design/goa/v3/dsl"
 )
 
-var _ = API("example", func() {
+var _ = API("book", func() {
 	Title("Book Service")
 	Description("Service that provides CRUD operations for a book")
 
@@ -35,10 +35,7 @@ var _ = Service("book", func() {
 		// Payload describes the method payload.
 		// Here the payload is an object that consists of two fields.
 		Payload(func() {
-			// Field describes an object field given a field index, a field
-			// name, a type and a description.
 			Field(1, "bookID", Int, "Book ID")
-			// Required list the names of fields that are required.
 			Required("bookID")
 		})
 
@@ -99,13 +96,30 @@ var _ = Service("book", func() {
 		})
 	})
 
+	Method("deleteBook", func() {
+		Payload(func() {
+			Field(1, "bookID", Int, "Book ID")
+			Required("bookID")
+		})
+		Error("NotFound")
+		Error("BadRequest")
+		Result(Empty)
+
+		HTTP(func() {
+			DELETE("/book/{bookID}")
+			Response(StatusNoContent)
+			Response("BadRequest", StatusBadRequest)
+			Response("NotFound", StatusNotFound)
+		})
+	})
+
 	// Serve the file with relative path ./gen/http/openapi.json for
 	// requests sent to /swagger.json.
 	Files("/swagger.json", "./gen/http/openapi.json")
 })
 
 var BookReq = Type("BookReq", func() {
-	Description("A single book response")
+	Description("A single book request")
 	Attribute("id", Int)
 	Attribute("title", String)
 	Attribute("author", String)
@@ -115,7 +129,7 @@ var BookReq = Type("BookReq", func() {
 })
 
 var BookPathcReq = Type("BookPathcReq", func() {
-	Description("A single book response")
+	Description("A single book request for patching")
 	Attribute("id", Int)
 	Attribute("title", String)
 	Attribute("author", String)
