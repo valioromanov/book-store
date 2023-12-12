@@ -60,3 +60,24 @@ func (br *BookRepo) UpdateBook(book BookDB) error {
 	}
 	return nil
 }
+
+func (br *BookRepo) DeleteBook(bookID int) error {
+	if bookID == 0 {
+		return fmt.Errorf("no book id provided")
+	}
+
+	bookForDeletion := BookDB{
+		ID: bookID,
+	}
+
+	tx := br.db.Delete(&bookForDeletion)
+	if tx.Error != nil {
+		return fmt.Errorf("error while deleting a record: %w", tx.Error)
+	}
+
+	if tx.RowsAffected == 0 {
+		return fmt.Errorf("no rows deleted")
+	}
+
+	return nil
+}
