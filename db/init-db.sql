@@ -2,7 +2,7 @@ CREATE TABLE IF NOT EXISTS books (
     id INT AUTO_INCREMENT PRIMARY KEY,
     title TEXT,
     author TEXT,
-    book_cover BLOB,
+    book_cover LONGBLOB,
     published_at TIMESTAMP
 );
 
