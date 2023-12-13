@@ -8,6 +8,7 @@ import (
 	"time"
 )
 
+//go:generate mockgen --source=controller.go --destination mocks/controller.go --package mocks
 type BookRepository interface {
 	FindById(id int) (repository.BookDB, error)
 	InsertBook(repository.BookDB) (int, error)
