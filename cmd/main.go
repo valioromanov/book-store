@@ -1,6 +1,7 @@
 package main
 
 import (
+	"book-store/cmd/env"
 	"book-store/cmd/internal"
 	"book-store/design/gen/book"
 	"book-store/design/gen/http/book/server"
@@ -11,7 +12,11 @@ import (
 )
 
 func main() {
-	repository := repository.NewBookRepo()
+	conf, err := env.LoadAppConfig()
+	if err != nil {
+		panic(err)
+	}
+	repository := repository.NewBookRepo(conf)
 	controller := internal.NewController(repository)
 	endpoints := book.NewEndpoints(controller)
 	mux := goahttp.NewMuxer()

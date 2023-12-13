@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"book-store/cmd/env"
 	"fmt"
 
 	"github.com/sirupsen/logrus"
@@ -12,10 +13,10 @@ type repository struct {
 	db gorm.DB
 }
 
-func newRepository() *repository {
+func newRepository(config env.AppConfig) *repository {
 	repository := repository{}
-	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=true",
-		"root", "root", "localhost", "3306", "books")
+	dsn := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?parseTime=true",
+		config.DBUser, config.DBPass, config.DBHost, config.DBPort, config.DBName)
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
 		logrus.Error("Error while connection to the database: ", err)

@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"book-store/cmd/env"
 	"fmt"
 
 	"github.com/sirupsen/logrus"
@@ -10,8 +11,8 @@ type BookRepo struct {
 	*repository
 }
 
-func NewBookRepo() *BookRepo {
-	repo := newRepository()
+func NewBookRepo(config env.AppConfig) *BookRepo {
+	repo := newRepository(config)
 	return &BookRepo{
 		repo,
 	}
@@ -38,6 +39,7 @@ func (br *BookRepo) InsertBook(book BookDB) (int, error) {
 	result := br.db.Create(&book)
 
 	if result.Error != nil {
+		logrus.Error(fmt.Sprintf("error while inserting book: %s", result.Error.Error()))
 		return 0, fmt.Errorf("error while inserting book: %w", result.Error)
 	}
 
@@ -46,12 +48,14 @@ func (br *BookRepo) InsertBook(book BookDB) (int, error) {
 
 func (br *BookRepo) UpdateBook(book BookDB) error {
 	if book.ID == 0 {
+		logrus.Error("error while updating book: no book id provided")
 		return fmt.Errorf("no book id provided")
 	}
 
 	tx := br.db.Save(&book)
 
 	if tx.Error != nil {
+		logrus.Error(fmt.Sprintf("error while updating book: %s", tx.Error.Error()))
 		return fmt.Errorf("error while updating a record: %w", tx.Error)
 	}
 
@@ -63,6 +67,7 @@ func (br *BookRepo) UpdateBook(book BookDB) error {
 
 func (br *BookRepo) DeleteBook(bookID int) error {
 	if bookID == 0 {
+		logrus.Error("error while deleting book: no book id provided")
 		return fmt.Errorf("no book id provided")
 	}
 
@@ -72,6 +77,7 @@ func (br *BookRepo) DeleteBook(bookID int) error {
 
 	tx := br.db.Delete(&bookForDeletion)
 	if tx.Error != nil {
+		logrus.Error(fmt.Sprintf("error while deleting book: %s", tx.Error.Error()))
 		return fmt.Errorf("error while deleting a record: %w", tx.Error)
 	}
 

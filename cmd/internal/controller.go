@@ -76,7 +76,6 @@ func (c *Controller) PostBook(context context.Context, request *book.BookReq) (*
 }
 
 func (c *Controller) PatchBook(context context.Context, request *book.BookPathcReq) error {
-	fmt.Println("request: ", request)
 	bookDB, err := c.repo.FindById(*request.ID)
 	if err != nil {
 		return book.MakeNotFound(fmt.Errorf("error while fetching book: %w", err))
