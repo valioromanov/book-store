@@ -14,21 +14,23 @@ There is a file `.env` where you can find the values of the env vars.
 Then you navigate to cmd directory `cd cmd` and run `go run main.go`.
 
 # Endpoints
+- GET /book/{id}: Retrieve details of a specific book.
+- POST /book: Create a new book.
+- PUT /book/{id}: Update details of a specific book.
+- DELETE /book/{id}: Delete a specific book.
 # Get a single book
-endpoint: /book/{book_id}
-Request: GET
-Path param: book_id - the id of the book from the database.
-Response: `{
+- endpoint: /book/{book_id}
+- Request: GET
+- Path param: book_id - the id of the book from the database.
+- Response: `{
 "title": "string",
 "author": "string",
 "bookCover": "bytes",
 "publishedAt": "timestamp"
 }`
-</br>
-Example:
+- Example:
 `curl --location --request GET 'http://localhost:8081/book/4'`
-</br>
-Response: Returns found book
+- Response: Returns found book
 `{
     "id": 4,
     "title": "Harry Potter",
@@ -37,22 +39,20 @@ Response: Returns found book
     "publishedAt": "2023-01-01"
 }`
 # Create a book
-endpoint: /book
-Request: POST
-Body: application/json </br>
+- endpoint: /book
+- Request: POST
+- Body: application/json </br>
 `{
 "title": "string",
 "author": "string",
 "bookCover": "bytes",
 "publishedAt": "timestamp",
 }`
-</br>
-Reponse: Returns the id of the newly created book
+- Response: Returns the id of the newly created book
 `{
   "id": "string"
 }`
-</br>
-Example: 
+-Example: 
 `curl --location --request POST 'http://localhost:8081/book' \
 --header 'Content-Type: application/json' \
 --data-raw '{
@@ -64,20 +64,18 @@ Example:
 '`
 
 # Update a book
-endpoint: /book/{book_id}
-Request: PATCH
-Path param: book_id - the id of the book you want to update
-Body: application/json </br>
+- endpoint: /book/{book_id}
+- Request: PATCH
+- Path param: book_id - the id of the book you want to update
+- Body: application/json </br>
 `{
 "title": "string",
 "author": "string",
 "bookCover": "bytes",
 "publishedAt": "timestamp",
 }`
-</br>
-Reponse: 204NoContent
-</br>
-Example: `curl --location --request PATCH 'http://localhost:8081/book/4' \
+- Reponse: 204NoContent
+- Example: `curl --location --request PATCH 'http://localhost:8081/book/4' \
 --header 'Content-Type: application/json' \
 --data-raw '{
     "title": "Harry Potter and changing name"    
@@ -85,13 +83,10 @@ Example: `curl --location --request PATCH 'http://localhost:8081/book/4' \
 '`
 
 # Delete a book
-endpoint: /book/{book_id}
-Request: DELETE
-Path param: book_id - the id of the book you want to delete
-</br>
-Reponse: 204NoContent
-</br>
-Example: `curl --location --request DELETE 'http://localhost:8081/book/3'`
-</br>
+- endpoint: /book/{book_id}
+- Request: DELETE
+- Path param: book_id - the id of the book you want to delete
+- Reponse: 204NoContent
+- Example: `curl --location --request DELETE 'http://localhost:8081/book/3'`
 
 FYI: In the repo you will find a postman collection you can test with.
